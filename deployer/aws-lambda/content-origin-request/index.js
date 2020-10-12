@@ -66,8 +66,7 @@ exports.handler = async (event, context) => {
    */
   const request = event.Records[0].cf.request;
   const host = request.headers.host[0].value.toLowerCase();
-  // A document URL with a trailing slash should redirect
-  // to the same URL without the trailing slash.
+
   let { url, status } = resolveFundamental(request.uri);
   if (url) {
     return redirect(url, {
@@ -75,6 +74,9 @@ exports.handler = async (event, context) => {
       cacheControlSeconds: 3600 * 24 * 30,
     });
   }
+
+  // A document URL with a trailing slash should redirect
+  // to the same URL without the trailing slash.
   if (
     request.uri.endsWith("/") &&
     request.uri.toLowerCase().includes("/docs/")
