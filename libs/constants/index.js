@@ -46,7 +46,7 @@ const DEFAULT_LOCALE = "en-US";
 const LOCALE_ALIASES = new Map([
   // Case is not important on either the keys or the values.
   ["en", "en-us"],
-  ["pt", "pt-PT"], // Note! Portugal Portugese is the default
+  ["pt", "pt-BR"], // Note! Portugal Portugese is the default
   ["cn", "zh-cn"],
   ["zh", "zh-cn"],
   ["zh-hans", "zh-cn"],
