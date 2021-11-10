@@ -1,36 +1,46 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-const chalk = require("chalk");
-const cheerio = require("cheerio");
+import chalk from "chalk";
+import cheerio from "cheerio";
 
-const {
+import {
   Document,
   CONTENT_ROOT,
   Image,
   REPOSITORY_URLS,
   execGit,
-} = require("../content");
-const kumascript = require("../kumascript");
+} from "../content/index.js";
+import kumascript from "../kumascript/index.js";
 
-const { FLAW_LEVELS } = require("./constants");
-const {
+import { FLAW_LEVELS } from "./constants.js";
+import {
   extractSections,
   extractSidebar,
   extractSummary,
-} = require("./document-extractor");
-const SearchIndex = require("./search-index");
-const { addBreadcrumbData } = require("./document-utils");
-const { fixFixableFlaws, injectFlaws, injectSectionFlaws } = require("./flaws");
-const { normalizeBCDURLs, extractBCDData } = require("./bcd-urls");
-const { checkImageReferences, checkImageWidths } = require("./check-images");
-const { getPageTitle } = require("./page-title");
-const { syntaxHighlight } = require("./syntax-highlight");
-const { formatNotecards } = require("./format-notecards");
-const buildOptions = require("./build-options");
-const { gather: gatherGitHistory } = require("./git-history");
-const { buildSPAs } = require("./spas");
-const { renderCache: renderKumascriptCache } = require("../kumascript");
+} from "./document-extractor.js";
+import SearchIndex from "./search-index.js";
+import { addBreadcrumbData } from "./document-utils.js";
+import {
+  fixFixableFlaws,
+  injectFlaws,
+  injectSectionFlaws,
+} from "./flaws/index.mjs";
+import { normalizeBCDURLs, extractBCDData } from "./bcd-urls.js";
+import { checkImageReferences, checkImageWidths } from "./check-images.js";
+import formatNotecards from "./format-notecards.js";
+import { getPageTitle } from "./page-title.js";
+import { syntaxHighlight } from "./syntax-highlight.js";
+
+import pkgBuildOptions from "./build-options.js";
+const buildOptions = pkgBuildOptions;
+
+import { gather as gatherGitHistory } from "./git-history.js";
+import { buildSPAs } from "./spas.js";
+import { renderCache as renderKumascriptCache } from "../kumascript/index.js";
+
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 const LANGUAGES_RAW = require("../content/languages.json");
 const { safeDecodeURIComponent } = require("../kumascript/src/api/util");
 
@@ -659,17 +669,14 @@ function renderContributorsTxt(wikiContributorNames = null, githubURL = null) {
   return txt;
 }
 
-module.exports = {
+export const options = buildOptions;
+
+export {
   FLAW_LEVELS,
-
   buildDocument,
-
   buildLiveSamplePageFromURL,
   renderContributorsTxt,
-
   SearchIndex,
-
-  options: buildOptions,
   gatherGitHistory,
   buildSPAs,
   getLastCommitURL,

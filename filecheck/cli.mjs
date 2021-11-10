@@ -1,12 +1,11 @@
-#!/usr/bin/env node
-const path = require("path");
+import path from "path";
 
-const program = require("@caporal/core").default;
+import program from "@caporal/core";
 
-const { runChecker } = require("./checker");
-const { MAX_COMPRESSION_DIFFERENCE_PERCENTAGE } = require("./constants");
+import { runChecker } from "./checker.mjs";
+import { MAX_COMPRESSION_DIFFERENCE_PERCENTAGE } from "./constants.mjs";
 
-program
+program.default
   .version("0.0.0")
   .option("--cwd <path>", "Explicit current-working-directory", {
     validator: program.PATH,
@@ -29,8 +28,9 @@ program
     }
     return runChecker(allFilePaths, options).catch((error) => {
       console.error(error);
+      // eslint-disable-next-line no-process-exit
       process.exit(1);
     });
   });
 
-program.run();
+program.default.run();

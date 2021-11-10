@@ -1,31 +1,31 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-const chalk = require("chalk");
-const got = require("got");
-const FileType = require("file-type");
-const imagemin = require("imagemin");
-const imageminPngquant = require("imagemin-pngquant");
-const imageminMozjpeg = require("imagemin-mozjpeg");
-const imageminGifsicle = require("imagemin-gifsicle");
-const imageminSvgo = require("imagemin-svgo");
-const sanitizeFilename = require("sanitize-filename");
+import chalk from "chalk";
+import got from "got";
+import FileType from "file-type";
+import imagemin from "imagemin";
+import imageminPngquant from "imagemin-pngquant";
+import imageminMozjpeg from "imagemin-mozjpeg";
+import imageminGifsicle from "imagemin-gifsicle";
+import imageminSvgo from "imagemin-svgo";
+import sanitizeFilename from "sanitize-filename";
 
-const { Document } = require("../../content");
-const { FLAW_LEVELS, VALID_FLAW_CHECKS } = require("../constants");
-const { DEFAULT_LOCALE } = require("../../libs/constants");
-const { replaceMatchesInText } = require("../matches-in-text");
-const { humanFileSize } = require("../utils");
-const { VALID_MIME_TYPES } = require("../../filecheck/constants");
-const { getBadBCDQueriesFlaws } = require("./bad-bcd-queries");
-const { getBrokenLinksFlaws } = require("./broken-links");
-const { getHeadingLinksFlaws } = require("./heading-links");
-const { getPreTagFlaws } = require("./pre-tags");
-const { injectSectionFlaws } = require("./sections");
-const { getUnsafeHTMLFlaws } = require("./unsafe-html");
-const { injectTranslationDifferences } = require("./translation-differences");
+import { Document } from "../../content/index.js";
+import { FLAW_LEVELS, VALID_FLAW_CHECKS } from "../constants.js";
+import { DEFAULT_LOCALE } from "../../libs/constants/index.js";
+import { replaceMatchesInText } from "../matches-in-text.js";
+import { humanFileSize } from "../utils.js";
+import { VALID_MIME_TYPES } from "../../filecheck/constants.mjs";
+import { getBadBCDQueriesFlaws } from "./bad-bcd-queries.js";
+import { getBrokenLinksFlaws } from "./broken-links.js";
+import { getHeadingLinksFlaws } from "./heading-links.js";
+import { getPreTagFlaws } from "./pre-tags.js";
+import { injectSectionFlaws } from "./sections.js";
+import { getUnsafeHTMLFlaws } from "./unsafe-html.js";
+import { injectTranslationDifferences } from "./translation-differences.js";
 
-function injectFlaws(doc, $, options, document) {
+export function injectFlaws(doc, $, options, document) {
   const flawChecks = [
     ["unsafe_html", getUnsafeHTMLFlaws, false],
     ["broken_links", getBrokenLinksFlaws, true],
@@ -77,7 +77,7 @@ function injectFlaws(doc, $, options, document) {
   }
 }
 
-async function fixFixableFlaws(doc, options, document) {
+export async function fixFixableFlaws(doc, options, document) {
   if (!options.fixFlaws) return;
 
   const { rawBody, isMarkdown } = document;
@@ -254,7 +254,7 @@ async function fixFixableFlaws(doc, options, document) {
         // Before writing to disk, run it through the same imagemin
         // compression we do in the filecheck CLI.
         const compressedImageBuffer = await imagemin.buffer(imageBuffer, {
-          plugins: [getImageminPlugin(url.pathname)],
+          plugins: [getImageminPlugin(url.pathname, fileType)],
         });
         if (compressedImageBuffer.length < imageBuffer.length) {
           console.log(
@@ -347,8 +347,14 @@ async function fixFixableFlaws(doc, options, document) {
   }
 }
 
-function getImageminPlugin(fileName) {
-  const extension = path.extname(fileName).toLowerCase();
+function getImageminPlugin(fileName, fileType) {
+  let extension = path.extname(fileName).toLowerCase();
+  if (extension === "") {
+    // for githubusercontent the filename will be something like
+    // /u/94519 so, extension will be an empty string. Use
+    // fileType.ext instead.
+    extension = `.${fileType.ext}`;
+  }
   if (extension === ".jpg" || extension === ".jpeg") {
     return imageminMozjpeg();
   }
@@ -361,7 +367,7 @@ function getImageminPlugin(fileName) {
   if (extension === ".svg") {
     return imageminSvgo();
   }
-  throw new Error(`No imagemin plugin for ${extension}`);
+  throw new Error(`No imagemin plugin for ${extension} or ${fileType.ext}`);
 }
 
-module.exports = { injectFlaws, injectSectionFlaws, fixFixableFlaws };
+export { injectSectionFlaws };
