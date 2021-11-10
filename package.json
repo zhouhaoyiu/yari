@@ -14,7 +14,7 @@
     "build:sw-dev": "cd client/pwa && yarn && yarn build",
     "dev": "yarn prepare-build && nf -j Procfile.dev start",
     "eslint": "eslint .",
-    "filecheck": "cd filecheck && node cli.js",
+    "filecheck": "cd filecheck && node cli.mjs",
     "md": "ts-node markdown/cli.ts",
     "prepare": "husky install",
     "prepare-build": "yarn build:client && yarn build:ssr && yarn tool optimize-client-build && yarn tool google-analytics-code && yarn tool popularities && yarn tool spas && yarn tool gather-git-history && yarn tool build-robots-txt",
@@ -22,8 +22,8 @@
     "prettier-format": "prettier --write .",
     "start": "(test -f client/build/index.html || yarn build:client) && (test -f ssr/dist/main.js || yarn build:ssr) && (test -d client/build/en-us/_spas || yarn tool spas) && nf -j Procfile.start start",
     "start:client": "cd client && cross-env BROWSER=none PORT=3000 react-scripts start",
-    "start:dev-server": "node-dev server",
-    "start:server": "node server",
+    "start:dev-server": "node-dev server/index.js",
+    "start:server": "node server/index.js",
     "start:static-server": "cross-env ENV_FILE=testing/.env node server/static.js",
     "style-dictionary": "style-dictionary build -c sd-config.js",
     "test": "yarn prettier-check && yarn test:client && yarn test:kumascript && yarn test:content && yarn test:testing",
@@ -34,7 +34,7 @@
     "test:kumascript": "jest kumascript --env=node",
     "test:prepare": "yarn prepare-build && yarn build && yarn start:static-server",
     "test:testing": "jest --rootDir testing",
-    "tool": "node tool/cli.js",
+    "tool": "node tool/cli.mjs",
     "traits:build": "cd traits && node cli.js",
     "watch:ssr": "cd ssr && webpack --mode=production --watch"
   },
@@ -87,7 +87,7 @@
     "http-proxy-middleware": "2.0.6",
     "image-size": "1.0.1",
     "image-type": "4.1.0",
-    "imagemin": "7.0.1",
+    "imagemin": "8.0.1",
     "imagemin-gifsicle": "7.0.0",
     "imagemin-mozjpeg": "9.0.0",
     "imagemin-pngquant": "9.0.2",
@@ -195,6 +195,6 @@
     "webpack-node-externals": "^3.0.0"
   },
   "engines": {
-    "node": ">=12.11.0 <17.0.0"
+    "node": ">=12.22.6 <17.0.0"
   }
 }
