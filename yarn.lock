@@ -2810,15 +2810,15 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@sidvind/better-ajv-errors@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@sidvind/better-ajv-errors/-/better-ajv-errors-0.9.0.tgz#fcc84df0d2a68b100a4d6b9b2cc7066525c42dee"
-  integrity sha512-GeeIsUsq8eUB7kvDq+fS0wpD0hZ56xrqsaVTiJEmSWqEK+BvTd29mah3AWDublvRx2dWQ/qMbvb3Ml98Huedcw==
+"@sidvind/better-ajv-errors@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sidvind/better-ajv-errors/-/better-ajv-errors-1.0.0.tgz#d2caceb47b31fee568c8b0902aa6a8ae9f3033c6"
+  integrity sha512-0wPZhyEtsBxecE4Hsy1jD1mewP/xW2U9R0A/slBjVRg2jnyx/50JygGjVZTPvipy/fehqjZTymv96n2ZeaenfQ==
   dependencies:
-    "@babel/code-frame" "^7.0.0"
-    chalk "^4.0.0"
+    "@babel/code-frame" "^7.16.0"
+    chalk "^4.1.0"
     json-to-ast "^2.0.3"
-    jsonpointer "^4.1.0"
+    jsonpointer "^5.0.0"
     leven "^3.1.0"
 
 "@sindresorhus/is@^0.7.0":
@@ -10569,14 +10569,14 @@ html-tags@^3.1.0:
   resolved "https://registry.yarnpkg.com/html-tags/-/html-tags-3.1.0.tgz#7b5e6f7e665e9fb41f30007ed9e0d41e97fb2140"
   integrity sha512-1qYz89hW3lFDEazhjW0yVAV87lw8lVkrJocr72XmBkMKsoSVJCQx3W8BXsC7hO2qAt8BoVjYjtAcZ9perqGnNg==
 
-html-validate@6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/html-validate/-/html-validate-6.1.0.tgz#e1f923acf6d5e2a5a82ef2726ecff81694ec0d9c"
-  integrity sha512-TLlN2GkC/m4nlcFP9U/KEQiVtxZdAwF6qrAosMdobmVCs2bVF1og4p9J+JUVZCC99jjbH1r+qR/BZZE0TZc6xw==
+html-validate@6.1.1:
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/html-validate/-/html-validate-6.1.1.tgz#1d08310e79fc203a622b0ff3fa0b08c2baa4fccb"
+  integrity sha512-AKq2MVpXmm6Cb4AMLDNo5FIjor6yqckQqc0rvd0iCDSi5ictkjVHZoHpbTxrNlUK/uyzAJGKy+gYeTGTI7LZfg==
   dependencies:
     "@babel/code-frame" "^7.10.0"
     "@html-validate/stylish" "^2.0.0"
-    "@sidvind/better-ajv-errors" "^0.9.0"
+    "@sidvind/better-ajv-errors" "^1.0.0"
     acorn-walk "^8.0.0"
     ajv "^8.0.0"
     deepmerge "^4.2.0"
@@ -12591,10 +12591,10 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-jsonpointer@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/jsonpointer/-/jsonpointer-4.1.0.tgz#501fb89986a2389765ba09e6053299ceb4f2c2cc"
-  integrity sha512-CXcRvMyTlnR53xMcKnuMzfCA5i/nfblTnnr74CZb6C4vG39eu6w51t7nKmU5MfLfbTgGItliNyjO/ciNPDqClg==
+jsonpointer@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/jsonpointer/-/jsonpointer-5.0.0.tgz#f802669a524ec4805fa7389eadbc9921d5dc8072"
+  integrity sha512-PNYZIdMjVIvVgDSYKTT63Y+KZ6IZvGRNNWcxwD+GNnUz1MKPfv30J8ueCjdwcN0nDx2SlshgyB7Oy0epAzVRRg==
 
 "jsx-ast-utils@^2.4.1 || ^3.0.0", jsx-ast-utils@^3.1.0:
   version "3.1.0"
@@ -13809,6 +13809,14 @@ micromark@^3.0.0:
     micromark-util-symbol "^1.0.0"
     micromark-util-types "^1.0.1"
     parse-entities "^3.0.0"
+
+micromark@~2.11.0:
+  version "2.11.4"
+  resolved "https://registry.yarnpkg.com/micromark/-/micromark-2.11.4.tgz#d13436138eea826383e822449c9a5c50ee44665a"
+  integrity sha512-+WoovN/ppKolQOFIAajxi7Lu9kInbPxFuTBVEavFcL8eAfVstoc5MocPmqBeAdBOJV00uaVjegzH4+MA0DN/uA==
+  dependencies:
+    debug "^4.0.0"
+    parse-entities "^2.0.0"
 
 micromatch@^3.1.10, micromatch@^3.1.4:
   version "3.1.10"
@@ -16079,12 +16087,12 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier-plugin-packagejson@^2.2.13:
-  version "2.2.13"
-  resolved "https://registry.yarnpkg.com/prettier-plugin-packagejson/-/prettier-plugin-packagejson-2.2.13.tgz#af7c25ff378236112ebbd69d7add6cbbee9320e8"
-  integrity sha512-AUsRlYHn7jjMck1X54wYTsKj6/E3wf0d0joPFSnSqY3Sxz/e2qqe2x7w0AiMdVeeQcRAkakjp7Qes/riT7J0zA==
+prettier-plugin-packagejson@^2.2.14:
+  version "2.2.14"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-packagejson/-/prettier-plugin-packagejson-2.2.14.tgz#f90d366772142013e08c639c58408605b9d72354"
+  integrity sha512-aGIMgFmeI0JapZYnrL/WHxIzs0qdleRgeXK5LqKR3unexoM0+UvLpoBOw8m/zXX0J4+MMfU6HMkWqoKVsO3mrg==
   dependencies:
-    sort-package-json "1.52.0"
+    sort-package-json "1.53.0"
 
 prettier@2.4.1:
   version "2.4.1"
@@ -16617,10 +16625,10 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-modal@^3.14.3:
-  version "3.14.3"
-  resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.14.3.tgz#7eb7c5ec85523e5843e2d4737cc17fc3f6aeb1c0"
-  integrity sha512-+C2KODVKyu20zHXPJxfOOcf571L1u/EpFlH+oS/3YDn8rgVE51QZuxuuIwabJ8ZFnOEHaD+r6XNjqwtxZnXO0g==
+react-modal@^3.14.4:
+  version "3.14.4"
+  resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.14.4.tgz#2ca7e8e9a180955e5c9508c228b73167c1e6f6a3"
+  integrity sha512-8surmulejafYCH9wfUmFyj4UfbSJwjcgbS9gf3oOItu4Hwd6ivJyVBETI0yHRhpJKCLZMUtnhzk76wXTsNL6Qg==
   dependencies:
     exenv "^1.2.0"
     prop-types "^15.7.2"
@@ -18061,10 +18069,10 @@ sort-object-keys@^1.1.3:
   resolved "https://registry.yarnpkg.com/sort-object-keys/-/sort-object-keys-1.1.3.tgz#bff833fe85cab147b34742e45863453c1e190b45"
   integrity sha512-855pvK+VkU7PaKYPc+Jjnmt4EzejQHyhhF33q31qG8x7maDzkeFhAAThdCYay11CISO+qAMwjOBP+fPZe0IPyg==
 
-sort-package-json@1.52.0:
-  version "1.52.0"
-  resolved "https://registry.yarnpkg.com/sort-package-json/-/sort-package-json-1.52.0.tgz#f960fe7cfae3120a4ce1b9eed7e010ac4bec998e"
-  integrity sha512-TsKDXgH3kPsaSrjAszQgg+n2/FDYdPrBrXD4YxMxExpogsi8LCek0YzK/jZ70i5Gi53WcpV+mVzvb5CHB5LpZw==
+sort-package-json@1.53.0:
+  version "1.53.0"
+  resolved "https://registry.yarnpkg.com/sort-package-json/-/sort-package-json-1.53.0.tgz#4f0c310aaf92a065c456e2ef47b2779633fe8651"
+  integrity sha512-nvWUed2LBr4CcASBvlXTi3c5ttgaj6a2BWhemBhr2PFYAqNu6DqxcNF0mWzzfaQwblFO7Qrse6AfD3KygeuZKw==
   dependencies:
     detect-indent "^6.0.0"
     detect-newline "3.1.0"
