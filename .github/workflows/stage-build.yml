@@ -51,6 +51,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2.4.0
+        with:
+          repository: mdn/yari-private
 
       - uses: actions/checkout@v2.4.0
         with:
