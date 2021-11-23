@@ -1,4 +1,4 @@
-const { Document } = require("../content");
+import { Document } from "../content/index.js";
 
 /** The breadcrumb is an array of parents include the document itself.
  * It only gets added to the document there are actual parents.
@@ -36,4 +36,4 @@ function addBreadcrumbData(url, document) {
   }
 }
 
-module.exports = { addBreadcrumbData };
+export { addBreadcrumbData };

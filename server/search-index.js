@@ -9,7 +9,7 @@ import {
   CONTENT_TRANSLATED_ROOT,
   VALID_LOCALES,
 } from "../content/index.js";
-import { SearchIndex } from "../build/index.mjs";
+import { SearchIndex } from "../build/index.js";
 
 function populateSearchIndex(searchIndex, localeLC) {
   const root = path.join(

@@ -14,7 +14,7 @@ import {
   CONTENT_ROOT,
   CONTENT_TRANSLATED_ROOT,
 } from "../content/index.js";
-import { getLastCommitURL } from "../build/index.mjs";
+import { getLastCommitURL } from "../build/index.js";
 import { ACTIVE_LOCALES, DEFAULT_LOCALE } from "../libs/constants/index.js";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);

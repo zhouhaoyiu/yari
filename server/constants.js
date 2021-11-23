@@ -1,6 +1,8 @@
-const path = require("path");
-require("dotenv");
+import path from "path";
+import dotenv from "dotenv";
+import { fileURLToPath } from "node:url";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const STATIC_ROOT =
   process.env.SERVER_STATIC_ROOT || path.join(__dirname, "../client/build");
 const PROXY_HOSTNAME =
@@ -8,4 +10,4 @@ const PROXY_HOSTNAME =
 
 const FAKE_V1_API = JSON.parse(process.env.SERVER_FAKE_V1_API || false);
 
-module.exports = { STATIC_ROOT, PROXY_HOSTNAME, FAKE_V1_API };
+export { STATIC_ROOT, PROXY_HOSTNAME, FAKE_V1_API };

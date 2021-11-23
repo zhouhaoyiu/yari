@@ -1,21 +1,26 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "node:url";
 
-const {
+import {
   CONTENT_ROOT,
   CONTENT_TRANSLATED_ROOT,
   VALID_LOCALES,
-} = require("../content");
-const {
+} from "../content/index.js";
+import {
   BUILD_OUT_ROOT,
   HOMEPAGE_FEED_URL,
   HOMEPAGE_FEED_DISPLAY_MAX,
-} = require("./constants");
-const { getFeedEntries } = require("./feedparser");
+} from "./constants.js";
+import { getFeedEntries } from "./feedparser.js";
+
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 // eslint-disable-next-line node/no-missing-require
-const { renderHTML } = require("../ssr/dist/main");
+const { renderHTML } = require("../ssr/dist/main.cjs");
 
 function getLanguages() {
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
   return new Map(
     Object.entries(
       JSON.parse(fs.readFileSync(path.join(__dirname, "languages.json")))
@@ -163,4 +168,4 @@ async function buildSPAs(options) {
   }
 }
 
-module.exports = { buildSPAs };
+export { buildSPAs };

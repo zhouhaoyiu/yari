@@ -1,8 +1,5 @@
-/**
- * @prettier
- */
-
 const fs = require("fs");
+import { fileURLToPath } from "node:url";
 const Templates = require("../src/templates.js");
 const { render } = require("../src/render.js");
 const {
@@ -16,6 +13,7 @@ const PAGE_ENV = { slug: "" };
 
 describe("render() function", () => {
   function fixture(name) {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
     return `${__dirname}/fixtures/render/${name}`;
   }
   function get(name) {

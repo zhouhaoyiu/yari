@@ -11,7 +11,12 @@ import {
   REPOSITORY_URLS,
   execGit,
 } from "../content/index.js";
-import kumascript from "../kumascript/index.js";
+
+import {
+  renderFromURL,
+  buildLiveSamplePages,
+  renderCache as renderKumascriptCache,
+} from "../kumascript/index.js";
 
 import { FLAW_LEVELS } from "./constants.js";
 import {
@@ -19,30 +24,30 @@ import {
   extractSidebar,
   extractSummary,
 } from "./document-extractor.js";
-import SearchIndex from "./search-index.js";
+import * as SearchIndex from "./search-index.js";
 import { addBreadcrumbData } from "./document-utils.js";
 import {
   fixFixableFlaws,
   injectFlaws,
   injectSectionFlaws,
-} from "./flaws/index.mjs";
+} from "./flaws/index.js";
 import { normalizeBCDURLs, extractBCDData } from "./bcd-urls.js";
 import { checkImageReferences, checkImageWidths } from "./check-images.js";
-import formatNotecards from "./format-notecards.js";
+import { formatNotecards } from "./format-notecards.js";
 import { getPageTitle } from "./page-title.js";
 import { syntaxHighlight } from "./syntax-highlight.js";
 
-import pkgBuildOptions from "./build-options.js";
+import { options as pkgBuildOptions } from "./build-options.js";
 const buildOptions = pkgBuildOptions;
 
 import { gather as gatherGitHistory } from "./git-history.js";
 import { buildSPAs } from "./spas.js";
-import { renderCache as renderKumascriptCache } from "../kumascript/index.js";
 
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const LANGUAGES_RAW = require("../content/languages.json");
-const { safeDecodeURIComponent } = require("../kumascript/src/api/util");
+
+import { safeDecodeURIComponent } from "../kumascript/src/api/util.js";
 
 const LANGUAGES = new Map(
   Object.entries(LANGUAGES_RAW).map(([locale, data]) => {
@@ -318,7 +323,7 @@ async function buildDocument(document, documentOptions = {}) {
     renderKumascriptCache.reset();
   }
   try {
-    [renderedHtml, flaws] = await kumascript.render(document.url);
+    [renderedHtml, flaws] = await renderFromURL(document.url);
   } catch (error) {
     if (error.name === "MacroInvocationError") {
       // The source HTML couldn't even be parsed! There's no point allowing
@@ -337,7 +342,7 @@ async function buildDocument(document, documentOptions = {}) {
 
   const $ = cheerio.load(`<div id="_body">${renderedHtml}</div>`);
 
-  const liveSamplePages = kumascript.buildLiveSamplePages(
+  const liveSamplePages = buildLiveSamplePages(
     document.url,
     document.metadata.title,
     $,
@@ -633,14 +638,12 @@ async function buildLiveSamplePageFromURL(url) {
   if (!document) {
     throw new Error(`No document found for ${documentURL}`);
   }
-  const liveSamplePage = kumascript
-    .buildLiveSamplePages(
-      document.url,
-      document.metadata.title,
-      (await kumascript.render(document.url))[0],
-      document.rawBody
-    )
-    .find((page) => page.id.toLowerCase() == decodedSampleID);
+  const liveSamplePage = buildLiveSamplePages(
+    document.url,
+    document.metadata.title,
+    (await renderFromURL(document.url))[0],
+    document.rawBody
+  ).find((page) => page.id.toLowerCase() == decodedSampleID);
 
   if (liveSamplePage) {
     if (liveSamplePage.flaw) {

@@ -12,7 +12,7 @@ import {
   buildDocument,
   buildLiveSamplePageFromURL,
   renderContributorsTxt,
-} from "../build/index.mjs";
+} from "../build/index.js";
 import { findDocumentTranslations } from "../content/translations.js";
 import {
   CONTENT_ROOT,
@@ -25,17 +25,17 @@ import {
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 // eslint-disable-next-line node/no-missing-require
-const { renderHTML } = require("../ssr/dist/main.js");
+const { renderHTML } = require("../ssr/dist/main.cjs");
 
 import { CSP_VALUE, DEFAULT_LOCALE } from "../libs/constants/index.js";
 
 import { STATIC_ROOT, PROXY_HOSTNAME, FAKE_V1_API } from "./constants.js";
-import documentRouter from "./document.mjs";
-import fakeV1APIRouter from "./fake-v1-api.js";
-import { searchIndexRoute } from "./search-index.mjs";
-import flawsRoute from "./flaws.mjs";
-import { router } from "./translations.mjs";
-import { staticMiddlewares, originRequestMiddleware } from "./middlewares.mjs";
+import documentRouter from "./document.js";
+import { router as fakeV1APIRouter } from "./fake-v1-api.js";
+import { searchIndexRoute } from "./search-index.js";
+import flawsRoute from "./flaws.js";
+import { router } from "./translations.js";
+import { staticMiddlewares, originRequestMiddleware } from "./middlewares.js";
 import { getRoot } from "../content/utils.js";
 
 async function buildDocumentFromURL(url) {

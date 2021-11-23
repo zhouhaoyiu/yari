@@ -13,4 +13,4 @@ function humanFileSize(size) {
   return `${num} ${"KMGTPEZY"[i - 1]}B`;
 }
 
-module.exports = { humanFileSize };
+export { humanFileSize };

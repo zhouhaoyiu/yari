@@ -35,7 +35,8 @@ import {
 import { runMakePopularitiesFile } from "./popularities.js";
 import { runOptimizeClientBuild } from "./optimize-client-build.js";
 import { runBuildRobotsTxt } from "./build-robots-txt.js";
-import kumascript from "../kumascript/index.js";
+
+import { renderFromURL } from "../kumascript/index.js";
 
 const PORT = parseInt(process.env.SERVER_PORT || "5000");
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -798,7 +799,7 @@ if (Mozilla && !Mozilla.dntEnabled()) {
 
       async function renderOrRemoveMacros(document) {
         try {
-          return await kumascript.render(document.url, {
+          return await renderFromURL(document.url, {
             invalidateCache: true,
             selective_mode: [cmdLC, macros],
           });

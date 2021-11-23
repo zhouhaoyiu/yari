@@ -17,12 +17,12 @@ import {
 } from "../content/index.js";
 import { VALID_LOCALES } from "../libs/constants/index.js";
 
-import ssr from "../ssr/dist/main.js";
+import ssr from "../ssr/dist/main.cjs";
 const { renderHTML } = ssr;
 
 import * as options from "./build-options.js";
-import { buildDocument, renderContributorsTxt } from "./index.mjs";
-import SearchIndex from "./search-index.js";
+import { buildDocument, renderContributorsTxt } from "./index.js";
+import { SearchIndex } from "./search-index.js";
 import { BUILD_OUT_ROOT } from "./constants.js";
 import { makeSitemapXML, makeSitemapIndexXML } from "./sitemaps.js";
 import { humanFileSize } from "./utils.js";

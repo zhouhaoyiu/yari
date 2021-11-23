@@ -4,7 +4,7 @@ import path from "path";
 import express from "express";
 
 import { Document, slugToFolder } from "../content/index.js";
-import { buildDocument } from "../build/index.mjs";
+import { buildDocument } from "../build/index.js";
 import { BUILD_OUT_ROOT } from "../build/constants.js";
 
 const router = express();

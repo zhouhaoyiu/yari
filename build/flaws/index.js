@@ -22,12 +22,12 @@ import { getBrokenLinksFlaws } from "./broken-links.js";
 import { getHeadingLinksFlaws } from "./heading-links.js";
 import { getPreTagFlaws } from "./pre-tags.js";
 import { injectSectionFlaws } from "./sections.js";
-import { getUnsafeHTMLFlaws } from "./unsafe-html.js";
+import { getAndMarkupUnsafeHTMLFlaws } from "./unsafe-html.js";
 import { injectTranslationDifferences } from "./translation-differences.js";
 
 export function injectFlaws(doc, $, options, document) {
   const flawChecks = [
-    ["unsafe_html", getUnsafeHTMLFlaws, false],
+    ["unsafe_html", getAndMarkupUnsafeHTMLFlaws, false],
     ["broken_links", getBrokenLinksFlaws, true],
     ["bad_bcd_queries", getBadBCDQueriesFlaws, false],
     ["bad_pre_tags", getPreTagFlaws, false],

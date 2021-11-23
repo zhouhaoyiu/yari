@@ -49,8 +49,4 @@ function replaceMatchesInText(
   });
 }
 
-module.exports = {
-  findMatchesInText,
-  getFirstMatchInText,
-  replaceMatchesInText,
-};
+export { findMatchesInText, getFirstMatchInText, replaceMatchesInText };
