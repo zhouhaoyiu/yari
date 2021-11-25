@@ -85,7 +85,7 @@ jobs:
           node-version: "12"
 
       - name: Cache node_modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         id: cached-node_modules
         with:
           path: |
@@ -97,12 +97,12 @@ jobs:
         run: yarn --frozen-lockfile
 
       - name: Install Python
-        uses: actions/setup-python@v2.2.2
+        uses: actions/setup-python@v2.3.0
         with:
           python-version: "3.8"
 
       - name: Install Python poetry
-        uses: snok/install-poetry@v1.2
+        uses: snok/install-poetry@v1.3
 
       - name: Install deployer
         run: |
