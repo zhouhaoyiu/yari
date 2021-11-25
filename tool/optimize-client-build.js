@@ -3,15 +3,15 @@
  * (react-scripts) can't do.
  *
  */
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-const cheerio = require("cheerio");
-const md5File = require("md5-file");
+import cheerio from "cheerio";
+import md5File from "md5-file";
 
 async function runOptimizeClientBuild(buildRoot) {
   const indexHtmlFilePath = path.join(buildRoot, "index.html");
-  const indexHtml = fs.readFileSync(indexHtmlFilePath, "utf-8");
+  const indexHtml = fs.readFileSync(indexHtmlFilePath, "utf8");
 
   const results = [];
 
@@ -115,4 +115,4 @@ function hrefToFilePath(root, href) {
   }
 }
 
-module.exports = { runOptimizeClientBuild };
+export { runOptimizeClientBuild };

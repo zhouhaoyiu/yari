@@ -25,7 +25,7 @@ import {
   buildURL,
   getRoot,
 } from "../content/index.js";
-import { buildDocument, gatherGitHistory, buildSPAs } from "../build/index.mjs";
+import { buildDocument, gatherGitHistory, buildSPAs } from "../build/index.js";
 import {
   ALWAYS_ALLOW_ROBOTS,
   BUILD_OUT_ROOT,

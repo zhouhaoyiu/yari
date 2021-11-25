@@ -44,7 +44,8 @@ export default function SettingsApp({ ...appProps }) {
       return await response.json();
     },
     {
-      initialData: appProps.possibleLocales
+      // see https://github.com/vercel/swr/pull/1370
+      fallbackData: appProps.possibleLocales
         ? {
             possibleLocales: appProps.possibleLocales,
           }

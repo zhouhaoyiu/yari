@@ -25,7 +25,8 @@ export function Homepage(props /* TODO: define a TS interface for this */) {
       return await response.json();
     },
     {
-      initialData: props.feedEntries
+      // see https://github.com/vercel/swr/pull/1370
+      fallbackData: props.feedEntries
         ? { feedEntries: props.feedEntries }
         : undefined,
       revalidateOnFocus: CRUD_MODE,

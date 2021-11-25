@@ -3,7 +3,7 @@ import path from "path";
 
 import chalk from "chalk";
 import got from "got";
-import FileType from "file-type";
+import * as FileType from "file-type";
 import imagemin from "imagemin";
 import imageminPngquant from "imagemin-pngquant";
 import imageminMozjpeg from "imagemin-mozjpeg";
