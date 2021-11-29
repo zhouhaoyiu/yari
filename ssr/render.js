@@ -1,4 +1,5 @@
 import fs from "fs";
+import { fileURLToPath } from "url";
 import path from "path";
 import { renderToString } from "react-dom/server";
 import cheerio from "cheerio";
@@ -9,7 +10,7 @@ import {
   SPEEDCURVE_LUX_ID,
 } from "../build/constants";
 
-const { DEFAULT_LOCALE } = require("../libs/constants");
+import { DEFAULT_LOCALE } from "../libs/constants/index.js";
 
 // When there are multiple options for a given language, this gives the
 // preferred locale for that language (language => preferred locale).
@@ -17,6 +18,8 @@ const PREFERRED_LOCALE = {
   pt: "pt-PT",
   zh: "zh-CN",
 };
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function getHrefLang(locale, otherLocales) {
   // In most cases, just return the language code, removing the country

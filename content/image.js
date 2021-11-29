@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import { readChunk, readChunkSync } from "read-chunk";
+import { readChunkSync } from "read-chunk";
 import imageType from "image-type";
 import isSvg from "is-svg";
 

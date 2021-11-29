@@ -35,7 +35,10 @@ function resolveDocumentPath(url) {
 
   const [, locale, , ...slug] = bareURL.toLowerCase().split("/");
 
-  const relativeFolderPath = path.join(locale, slugToFolder(slug.join("/")));
+  const relativeFolderPath = path.join(
+    locale,
+    slugToFolderUtil(slug.join("/"))
+  );
   const relativeFilePath = path.join(relativeFolderPath, "index.html");
 
   const root = getRoot(locale);

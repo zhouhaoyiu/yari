@@ -1,5 +1,5 @@
-const got = require("got");
-const braces = require("braces");
+import got from "got";
+import braces from "braces";
 
 function serverURL(pathname = "/") {
   return `http://localhost:5000${pathname}`;

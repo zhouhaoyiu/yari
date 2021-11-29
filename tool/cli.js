@@ -39,6 +39,7 @@ import { runBuildRobotsTxt } from "./build-robots-txt.js";
 import { renderFromURL } from "../kumascript/index.js";
 
 const PORT = parseInt(process.env.SERVER_PORT || "5000");
+// eslint-disable-next-line
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // The Google Analytics pageviews CSV file parsed, sorted (most pageviews

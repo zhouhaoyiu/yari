@@ -1,9 +1,9 @@
-/**
- * @prettier
- */
-const path = require("path");
+import path from "path";
+import { createRequire } from "module";
 
-const { assert, itMacro, describeMacro, beforeEachMacro } = require("./utils");
+import { assert, itMacro, describeMacro, beforeEachMacro } from "./utils.js";
+
+const require = createRequire(import.meta.url);
 
 const CONTENT_ROOT = process.env.CONTENT_ROOT;
 if (!CONTENT_ROOT) {

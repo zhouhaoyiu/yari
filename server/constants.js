@@ -1,6 +1,5 @@
 import path from "path";
-import dotenv from "dotenv";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const STATIC_ROOT =

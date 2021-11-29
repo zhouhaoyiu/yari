@@ -1,13 +1,16 @@
-const fs = require("fs");
-const crypto = require("crypto");
-const path = require("path");
+import fs from "fs";
+import crypto from "crypto";
+import path from "path";
 
-const glob = require("glob");
-const chalk = require("chalk");
-const fm = require("front-matter");
-const log = require("loglevel");
+import glob from "glob";
+// @TODO we can probably remove the line below once CRA 5.0 is released
+// https://github.com/facebook/create-react-app/pull/11375
+// eslint-disable-next-line node/no-missing-import
+import chalk from "chalk";
+import fm from "front-matter";
+import log from "loglevel";
 
-const {
+import {
   buildURL,
   execGit,
   slugToFolder,
@@ -16,7 +19,7 @@ const {
   CONTENT_ROOT,
   CONTENT_TRANSLATED_ROOT,
   VALID_LOCALES,
-} = require("../content");
+} from "../content/index.js";
 
 const CONFLICTING = "conflicting";
 const ORPHANED = "orphaned";
@@ -231,7 +234,7 @@ function syncTranslatedContentForAllLocales() {
   return moved;
 }
 
-module.exports = {
+export {
   syncTranslatedContent,
   syncAllTranslatedContent,
   syncTranslatedContentForAllLocales,

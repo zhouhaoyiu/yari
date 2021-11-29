@@ -1,12 +1,13 @@
-const { assert, itMacro, describeMacro, lintHTML } = require("./utils");
+import fs from "fs";
+import { fileURLToPath } from "url";
+import path from "path";
+import jsdom from "jsdom";
+import extend from "extend";
 
-const fs = require("fs");
-const path = require("path");
-const jsdom = require("jsdom");
-const extend = require("extend");
+import { assert, itMacro, describeMacro, lintHTML } from "./utils.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const fixture_dir = path.resolve(__dirname, "fixtures/compat");
-
-const { JSDOM } = jsdom;
 
 let fixtureCompatData = {};
 fs.readdirSync(fixture_dir).forEach(function (fn) {
@@ -20,7 +21,7 @@ fs.readdirSync(fixture_dir).forEach(function (fn) {
 describeMacro("Compat", function () {
   itMacro("Outputs a simple div tag", async (macro) => {
     const result = await macro.call("api.feature");
-    const dom = JSDOM.fragment(result);
+    const dom = jsdom.fragment(result);
     assert.equal(dom.querySelector("div.bc-data").id, "bcd:api.feature");
     assert.equal(dom.querySelector("div.bc-data").dataset.depth, "1");
     assert.equal(
@@ -31,7 +32,7 @@ describeMacro("Compat", function () {
 
   itMacro("Outputs the data-depth on the second parameter", async (macro) => {
     const result = await macro.call("api.feature", 2);
-    const dom = JSDOM.fragment(result);
+    const dom = jsdom.fragment(result);
     assert.equal(dom.querySelector("div.bc-data").dataset.depth, "2");
   });
 

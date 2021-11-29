@@ -1,8 +1,4 @@
-/**
- * @prettier
- */
-
-const { assert, itMacro, describeMacro } = require("./utils");
+import { assert, itMacro, describeMacro } from "./utils.js";
 
 describeMacro("spec2", function () {
   itMacro("CR (en-US)", function (macro) {

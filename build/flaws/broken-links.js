@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath } from "url";
 
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { visit } from "unist-util-visit";
