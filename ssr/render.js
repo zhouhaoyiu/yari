@@ -1,5 +1,4 @@
 import fs from "fs";
-import { fileURLToPath } from "url";
 import path from "path";
 import { renderToString } from "react-dom/server";
 import cheerio from "cheerio";
@@ -8,7 +7,7 @@ import {
   ALWAYS_ALLOW_ROBOTS,
   BUILD_OUT_ROOT,
   SPEEDCURVE_LUX_ID,
-} from "../build/constants";
+} from "../build/constants.js";
 
 import { DEFAULT_LOCALE } from "../libs/constants/index.js";
 
@@ -18,8 +17,6 @@ const PREFERRED_LOCALE = {
   pt: "pt-PT",
   zh: "zh-CN",
 };
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function getHrefLang(locale, otherLocales) {
   // In most cases, just return the language code, removing the country
@@ -58,6 +55,7 @@ const lazy = (creator) => {
   };
 };
 
+// eslint-disable-next-line no-undef
 const clientBuildRoot = path.resolve(__dirname, "../../client/build");
 
 const readBuildHTML = lazy(() => {
@@ -98,7 +96,7 @@ const getSpeedcurveJS = lazy(() => {
     .readFileSync(
       // The file is called `...js.txt` so that Prettier never touches it.
       path.join(__dirname, "..", "speedcurve-lux-snippet.js.txt"),
-      "utf-8"
+      "utf8"
     )
     .trim();
 });
@@ -110,10 +108,7 @@ const extractWebFontURLs = lazy(() => {
   );
   for (const entrypoint of manifest.entrypoints) {
     if (!entrypoint.endsWith(".css")) continue;
-    const css = fs.readFileSync(
-      path.join(clientBuildRoot, entrypoint),
-      "utf-8"
-    );
+    const css = fs.readFileSync(path.join(clientBuildRoot, entrypoint), "utf8");
     const generator = extractCSSURLs(
       css,
       (url) => url.endsWith(".woff2") && /Bold/i.test(url)
