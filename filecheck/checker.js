@@ -5,7 +5,7 @@ import { promisify } from "util";
 import fse from "fs-extra";
 import tempy from "tempy";
 import cheerio from "cheerio";
-import * as FileType from "file-type";
+import { fileTypeFromFile } from "file-type";
 import imagemin from "imagemin";
 import imageminPngquant from "imagemin-pngquant";
 import imageminMozjpeg from "imagemin-mozjpeg";
@@ -17,7 +17,7 @@ import {
   MAX_FILE_SIZE,
   VALID_MIME_TYPES,
   MAX_COMPRESSION_DIFFERENCE_PERCENTAGE,
-} from "./constants.mjs";
+} from "./constants.js";
 
 function formatSize(bytes) {
   if (bytes > 1024 * 1024) {
@@ -78,7 +78,7 @@ export async function checkFile(filePath, options) {
     });
   } else {
     // Check that the file extension matches the file header.
-    const fileType = await FileType.fromFile(filePath);
+    const fileType = await fileTypeFromFile(filePath);
     if (!fileType) {
       // This can easily happen if the .png (for example) file is actually just
       // a text file and not a binary.

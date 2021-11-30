@@ -2,8 +2,8 @@ import path from "path";
 
 import program from "@caporal/core";
 
-import { runChecker } from "./checker.mjs";
-import { MAX_COMPRESSION_DIFFERENCE_PERCENTAGE } from "./constants.mjs";
+import { runChecker } from "./checker.js";
+import { MAX_COMPRESSION_DIFFERENCE_PERCENTAGE } from "./constants.js";
 
 program.default
   .version("0.0.0")
@@ -19,7 +19,7 @@ program.default
   .option("--save-compression", "If it can be compressed, save the result", {
     validator: program.BOOL,
   })
-  .argument("[files...]", "list of files to check")
+  .argument("<files>", "list of space separated files to check")
   .action(({ args, options }) => {
     const cwd = options.cwd || process.cwd();
     const allFilePaths = (args.files || []).map((f) => path.resolve(cwd, f));

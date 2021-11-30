@@ -12,7 +12,7 @@
     "build:ssr": "cd ssr && webpack --mode=production",
     "dev": "yarn prepare-build && nf -j Procfile.dev start",
     "eslint": "eslint .",
-    "filecheck": "cd filecheck && node cli.mjs",
+    "filecheck": "cd filecheck && node cli.js",
     "fiori:build": "cd client && build-storybook",
     "fiori:start": "cd client && start-storybook -p 6006",
     "md": "ts-node markdown/cli.ts",
