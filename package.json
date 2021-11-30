@@ -16,7 +16,7 @@
     "dev": "yarn prepare-build && nf -j Procfile.dev start",
     "eslint": "eslint .",
     "filecheck": "cd filecheck && node cli.js",
-    "md": "TS_NODE_PROJECT='./markdown/tsconfig.json' node --loader ts-node/esm markdown/cli.ts",
+    "md": "ts-node markdown/cli.ts",
     "prepare": "husky install",
     "prepare-build": "yarn build:client && yarn build:ssr && yarn tool optimize-client-build && yarn tool google-analytics-code && yarn tool popularities && yarn tool spas && yarn tool gather-git-history && yarn tool build-robots-txt",
     "prettier-check": "prettier --check .",
