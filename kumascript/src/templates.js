@@ -31,7 +31,7 @@ import ejs from "ejs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_MACROS_DIRECTORY = path.normalize(`${__dirname}/../macros/`);
 
-class Templates {
+export default class Templates {
   constructor(macroDirectory = DEFAULT_MACROS_DIRECTORY) {
     this.macroDirectory = macroDirectory;
     this.macroNameToPath = new Map();
@@ -123,5 +123,3 @@ class Templates {
     return new Map(this.macroNameToPath);
   }
 }
-
-export { Templates };
