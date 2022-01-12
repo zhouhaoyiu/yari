@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 function testURL(pathname = "/") {
-  return "http://localhost:5000" + pathname;
+  return "http://localhost:5042" + pathname;
 }
 
 test.describe("Site search", () => {

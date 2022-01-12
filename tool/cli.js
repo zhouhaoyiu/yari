@@ -40,7 +40,7 @@ import { runBuildRobotsTxt } from "./build-robots-txt.js";
 
 import { renderFromURL } from "../kumascript/index.js";
 
-const PORT = parseInt(process.env.SERVER_PORT || "5000");
+const PORT = parseInt(process.env.SERVER_PORT || "5042");
 // eslint-disable-next-line
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
