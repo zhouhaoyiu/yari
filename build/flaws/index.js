@@ -16,7 +16,7 @@ import { FLAW_LEVELS, VALID_FLAW_CHECKS } from "../constants.js";
 import { DEFAULT_LOCALE } from "../../libs/constants/index.js";
 import { replaceMatchesInText } from "../matches-in-text.js";
 import { humanFileSize } from "../utils.js";
-import { VALID_MIME_TYPES } from "../../filecheck/constants.mjs";
+import { VALID_MIME_TYPES } from "../../filecheck/constants.js";
 import { getBadBCDQueriesFlaws } from "./bad-bcd-queries.js";
 import { getBrokenLinksFlaws } from "./broken-links.js";
 import { getHeadingLinksFlaws } from "./heading-links.js";
