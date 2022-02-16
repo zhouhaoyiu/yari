@@ -489,11 +489,9 @@ function _addSingleSpecialSection($) {
         const specificationsData = {
           bcdSpecificationURL: specURL,
           title: "Unknown specification",
-          shortTitle: "Unknown specification",
         };
         if (spec) {
           specificationsData.title = spec.title;
-          specificationsData.shortTitle = spec.shortTitle;
         }
 
         return specificationsData;
