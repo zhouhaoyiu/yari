@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
-import { renderToString } from "react-dom/server";
+import { fileURLToPath } from "url";
+import { renderToString } from "react-dom/server.js";
 import cheerio from "cheerio";
 
 import {
@@ -56,6 +57,7 @@ const lazy = (creator) => {
 };
 
 // eslint-disable-next-line no-undef
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const clientBuildRoot = path.resolve(__dirname, "../../client/build");
 
 const readBuildHTML = lazy(() => {

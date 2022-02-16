@@ -3,10 +3,10 @@ import path from "path";
 import dotenv from "dotenv";
 
 import React from "react";
-import { StaticRouter } from "react-router-dom/server";
+import { StaticRouter } from "react-router-dom/server.js";
 
-import { App } from "../client/src/app";
-import render from "./render";
+import { App } from "../client/src/app.tsx";
+import render from "./render.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // This is necessary because the ssr.js is in dist/ssr.js
