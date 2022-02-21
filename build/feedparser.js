@@ -2,8 +2,9 @@ import fs from "fs";
 import path from "path";
 import { promisify } from "util";
 
+// eslint-disable-next-line node/no-missing-import
 import got from "got";
-import parser from "fast-xml-parser";
+import { XMLParser } from "fast-xml-parser";
 import cheerio from "cheerio";
 import tempy from "tempy";
 
@@ -21,15 +22,18 @@ async function getFeedEntries(url) {
     feedText = (await readFile(savedFeedEntriesFilePath)).toString();
   } else {
     const buffer = await got(url, {
-      responseType: "buffer",
-      resolveBodyOnly: true,
-      timeout: 5000,
-      retry: 5,
-    });
+      timeout: {
+        response: 5000,
+      },
+      retry: {
+        limit: 5,
+      },
+    }).buffer();
     feedText = buffer.toString();
     await writeFile(savedFeedEntriesFilePath, feedText);
   }
 
+  const parser = new XMLParser();
   const feed = parser.parse(feedText);
   const entries = [];
   for (const item of feed.rss.channel.item) {

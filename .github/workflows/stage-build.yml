@@ -142,11 +142,6 @@ jobs:
           # origin domain isn't what that account expects.
           BUILD_GOOGLE_ANALYTICS_ACCOUNT: UA-36116321-5
 
-          # See the code for a further explanation for this.
-          # You get the ID from
-          # https://speedcurve.com/mozilla-add-ons/mdn/settings/updated/#lux
-          BUILD_SPEEDCURVE_LUX_ID: 108906238
-
           # This enables the Plus call-to-action banner and the Plus landing page
           REACT_APP_ENABLE_PLUS: true
 

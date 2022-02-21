@@ -1,14 +1,10 @@
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
+import { cwd } from "process";
 import { renderToString } from "react-dom/server.js";
 import cheerio from "cheerio";
 
-import {
-  ALWAYS_ALLOW_ROBOTS,
-  BUILD_OUT_ROOT,
-  SPEEDCURVE_LUX_ID,
-} from "../build/constants.js";
+import { ALWAYS_ALLOW_ROBOTS, BUILD_OUT_ROOT } from "../build/constants.js";
 
 import { DEFAULT_LOCALE } from "../libs/constants/index.js";
 
@@ -56,9 +52,7 @@ const lazy = (creator) => {
   };
 };
 
-// eslint-disable-next-line no-undef
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const clientBuildRoot = path.resolve(__dirname, "../../client/build");
+const clientBuildRoot = path.resolve(cwd(), "client/build");
 
 const readBuildHTML = lazy(() => {
   const html = fs.readFileSync(
@@ -91,16 +85,6 @@ const getGAScriptPathName = lazy((relPath = "/static/js/ga.js") => {
     return relPath;
   }
   return null;
-});
-
-const getSpeedcurveJS = lazy(() => {
-  return fs
-    .readFileSync(
-      // The file is called `...js.txt` so that Prettier never touches it.
-      path.join(__dirname, "..", "speedcurve-lux-snippet.js.txt"),
-      "utf8"
-    )
-    .trim();
 });
 
 const extractWebFontURLs = lazy(() => {
@@ -231,16 +215,6 @@ export default function render(
 
   if (!pageNotFound) {
     $('link[rel="canonical"]').attr("href", canonicalURL);
-  }
-
-  if (SPEEDCURVE_LUX_ID) {
-    // The snippet is always the same, if it's present, but the ID varies
-    // See LUX settings here https://speedcurve.com/mozilla-add-ons/mdn/settings/lux/
-    const speedcurveJS = getSpeedcurveJS();
-    $("<script>").text(speedcurveJS).appendTo($("head"));
-    $(
-      `<script src="https://cdn.speedcurve.com/js/lux.js?id=${SPEEDCURVE_LUX_ID}" async defer crossorigin="anonymous"></script>`
-    ).appendTo($("head"));
   }
 
   // As part of the pre-build steps, in the build root, a `ga.js` file is generated.
