@@ -22,7 +22,7 @@ To run these tests, first run:
 
 ```sh
 export ENV_FILE=testing/.env
-yarn prepare-build
+yarn prepare:build
 yarn build
 yarn start:static-server
 ```
@@ -52,7 +52,7 @@ HTML files with `playwright`. It's based on the same steps as above, so first:
 
 ```sh
 export ENV_FILE=testing/.env
-yarn prepare-build
+yarn prepare:build
 yarn build
 yarn start:static-server
 ```

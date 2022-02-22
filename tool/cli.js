@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
-// eslint-disable-next-line node/no-missing-import
-import { fileURLToPath } from "node:url";
+import { fileURLToPath } from "url";
 
 import klawSync from "klaw-sync";
 import frontmatter from "front-matter";
