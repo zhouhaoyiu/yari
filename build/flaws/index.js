@@ -3,7 +3,7 @@ import path from "path";
 
 import chalk from "chalk";
 import got from "got";
-import * as FileType from "file-type";
+import { fileTypeFromBuffer } from "file-type";
 import imagemin from "imagemin";
 import imageminPngquant from "imagemin-pngquant";
 import imageminMozjpeg from "imagemin-mozjpeg";
@@ -191,12 +191,15 @@ export async function fixFixableFlaws(doc, options, document) {
       }
       try {
         const imageResponse = await got(forceExternalURL(flaw.src), {
-          responseType: "buffer",
-          timeout: 10000,
-          retry: 3,
+          timeout: {
+            response: 10000,
+          },
+          retry: {
+            limit: 3,
+          },
         });
-        const imageBuffer = imageResponse.body;
-        let fileType = await FileType.fromBuffer(imageBuffer);
+        const imageBuffer = imageResponse.rawBody;
+        let fileType = await fileTypeFromBuffer(imageBuffer);
         if (
           !fileType &&
           flaw.src.toLowerCase().endsWith(".svg") &&
@@ -206,7 +209,7 @@ export async function fixFixableFlaws(doc, options, document) {
         ) {
           // If the SVG doesn't have the `<?xml version="1.0" encoding="UTF-8"?>`
           // and/or the `<!DOCTYPE svg PUBLIC ...` in the first couple of bytes
-          // the FileType.fromBuffer will fail.
+          // the fileTypeFromBuffer will fail.
           // But if the image URL and the response Content-Type are sane, we
           // can safely assumes it's an SVG file.
           fileType = {
@@ -228,7 +231,7 @@ export async function fixFixableFlaws(doc, options, document) {
             `${flaw.src} has an unrecognized mime type: ${fileType.mime}`
           );
         }
-        // Otherwise FileType would make it `.xml`
+        // Otherwise fileTypeFromBuffer would make it `.xml`
         const imageExtension = isSVG ? "svg" : fileType.ext;
         const decodedPathname = decodeURI(url.pathname).replace(/\s+/g, "_");
         const imageBasename = sanitizeFilename(

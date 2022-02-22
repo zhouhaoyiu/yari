@@ -134,8 +134,12 @@ export default {
         webExtExamples = await got(
           "https://raw.githubusercontent.com/mdn/webextensions-examples/master/examples.json",
           {
-            timeout: 1000,
-            retry: 5,
+            timeout: {
+              response: 1000,
+            },
+            retry: {
+              limit: 5,
+            },
           }
         ).json();
       } catch (error) {
