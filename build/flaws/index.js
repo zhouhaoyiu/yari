@@ -1,27 +1,18 @@
-import fs from "fs";
 import path from "path";
 
 import chalk from "chalk";
-import got from "got";
-import { fileTypeFromBuffer } from "file-type";
-import imagemin from "imagemin";
-import imageminPngquant from "imagemin-pngquant";
-import imageminMozjpeg from "imagemin-mozjpeg";
-import imageminGifsicle from "imagemin-gifsicle";
-import imageminSvgo from "imagemin-svgo";
-import sanitizeFilename from "sanitize-filename";
 
 import { Document } from "../../content/index.js";
 import { FLAW_LEVELS, VALID_FLAW_CHECKS } from "../constants.js";
 import { DEFAULT_LOCALE } from "../../libs/constants/index.js";
 import { replaceMatchesInText } from "../matches-in-text.js";
-import { humanFileSize } from "../utils.js";
-import { VALID_MIME_TYPES } from "../../filecheck/constants.js";
+import { forceExternalURL, downloadAndResizeImage } from "../utils.js";
 import { getBadBCDQueriesFlaws } from "./bad-bcd-queries.js";
 import { getBrokenLinksFlaws } from "./broken-links.js";
 import { getHeadingLinksFlaws } from "./heading-links.js";
 import { getPreTagFlaws } from "./pre-tags.js";
 import { injectSectionFlaws } from "./sections.js";
+import { getUnsafeHTMLFlaws } from "./unsafe-html";
 import { getAndMarkupUnsafeHTMLFlaws } from "./unsafe-html.js";
 import { injectTranslationDifferences } from "./translation-differences.js";
 
@@ -158,19 +149,6 @@ export async function fixFixableFlaws(doc, options, document) {
     }
   }
 
-  // We have a lot of images that *should* be external, at least for the sake
-  // of cleaning up, but aren't. E.g. `/@api/deki/files/247/=HTMLBlinkElement.gif`
-  // These get logged as external images by the flaw detection, but to actually
-  // be able to process them and fix the problem we need to "temporarily"
-  // pretend they were hosted on a remote working full domain.
-  // See https://github.com/mdn/yari/issues/1103
-  function forceExternalURL(url) {
-    if (url.startsWith("/")) {
-      return `https://mdn.mozillademos.org${url}`;
-    }
-    return url;
-  }
-
   // Any 'images' flaws with a suggestion or external image...
   for (const flaw of doc.flaws.images || []) {
     if (!(flaw.suggestion || flaw.externalImage)) {
@@ -190,86 +168,13 @@ export async function fixFixableFlaws(doc, options, document) {
         throw new Error(`Insecure image URL ${flaw.src}`);
       }
       try {
-        const imageResponse = await got(forceExternalURL(flaw.src), {
-          timeout: {
-            response: 10000,
-          },
-          retry: {
-            limit: 3,
-          },
-        });
-        const imageBuffer = imageResponse.rawBody;
-        let fileType = await fileTypeFromBuffer(imageBuffer);
-        if (
-          !fileType &&
-          flaw.src.toLowerCase().endsWith(".svg") &&
-          imageResponse.headers["content-type"]
-            .toLowerCase()
-            .startsWith("image/svg+xml")
-        ) {
-          // If the SVG doesn't have the `<?xml version="1.0" encoding="UTF-8"?>`
-          // and/or the `<!DOCTYPE svg PUBLIC ...` in the first couple of bytes
-          // the fileTypeFromBuffer will fail.
-          // But if the image URL and the response Content-Type are sane, we
-          // can safely assumes it's an SVG file.
-          fileType = {
-            ext: "xml",
-            mime: "application/xml",
-          };
-        }
-        if (!fileType) {
-          throw new Error(
-            `No file type could be extracted from ${flaw.src} at all. Probably not going to be a valid image file.`
-          );
-        }
-        const isSVG =
-          fileType.mime === "application/xml" &&
-          flaw.src.toLowerCase().endsWith(".svg");
-
-        if (!(VALID_MIME_TYPES.has(fileType.mime) || isSVG)) {
-          throw new Error(
-            `${flaw.src} has an unrecognized mime type: ${fileType.mime}`
-          );
-        }
-        // Otherwise fileTypeFromBuffer would make it `.xml`
-        const imageExtension = isSVG ? "svg" : fileType.ext;
         const decodedPathname = decodeURI(url.pathname).replace(/\s+/g, "_");
-        const imageBasename = sanitizeFilename(
-          `${path.basename(
-            decodedPathname,
-            path.extname(decodedPathname)
-          )}.${imageExtension}`
+        const basePath = Document.getFolderPath(document.metadata);
+        const destination = await downloadAndResizeImage(
+          flaw.src,
+          decodedPathname,
+          basePath
         );
-        const destination = path.join(
-          Document.getFolderPath(document.metadata),
-          path
-            .basename(imageBasename)
-            // Names like `screenshot-(1).png` are annoying because the `(` often
-            // has to be escaped when working on the command line.
-            .replace(/[()]/g, "")
-            .replace(/\s+/g, "_")
-            // From legacy we have a lot of images that are named like
-            // `/@api/deki/files/247/=HTMLBlinkElement.gif` for example.
-            // Take this opportunity to clean that odd looking leading `=`.
-            .replace(/^=/, "")
-            .toLowerCase()
-        );
-        // Before writing to disk, run it through the same imagemin
-        // compression we do in the filecheck CLI.
-        const compressedImageBuffer = await imagemin.buffer(imageBuffer, {
-          plugins: [getImageminPlugin(url.pathname, fileType)],
-        });
-        if (compressedImageBuffer.length < imageBuffer.length) {
-          console.log(
-            `Raw image size: ${humanFileSize(
-              imageBuffer.length
-            )} Compressed: ${humanFileSize(compressedImageBuffer.length)}`
-          );
-          fs.writeFileSync(destination, compressedImageBuffer);
-        } else {
-          console.log(`Raw image size: ${humanFileSize(imageBuffer.length)}`);
-          fs.writeFileSync(destination, imageBuffer);
-        }
         console.log(`Downloaded ${flaw.src} to ${destination}`);
         newSrc = path.basename(destination);
       } catch (error) {
@@ -350,27 +255,4 @@ export async function fixFixableFlaws(doc, options, document) {
   }
 }
 
-function getImageminPlugin(fileName, fileType) {
-  let extension = path.extname(fileName).toLowerCase();
-  if (extension === "") {
-    // for githubusercontent the filename will be something like
-    // /u/94519 so, extension will be an empty string. Use
-    // fileType.ext instead.
-    extension = `.${fileType.ext}`;
-  }
-  if (extension === ".jpg" || extension === ".jpeg") {
-    return imageminMozjpeg();
-  }
-  if (extension === ".png") {
-    return imageminPngquant();
-  }
-  if (extension === ".gif") {
-    return imageminGifsicle();
-  }
-  if (extension === ".svg") {
-    return imageminSvgo();
-  }
-  throw new Error(`No imagemin plugin for ${extension} or ${fileType.ext}`);
-}
-
-export { injectSectionFlaws };
+export { injectFlaws, injectSectionFlaws, fixFixableFlaws };
