@@ -1,7 +1,11 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { ACTIVE_LOCALES, VALID_LOCALES } from "../libs/constants/index.js";
+import {
+  ACTIVE_LOCALES,
+  VALID_LOCALES,
+  DEFAULT_LOCALE,
+} from "../libs/constants/index.js";
 
 // @see https://github.com/motdotla/dotenv/issues/89#issuecomment-139372079
 import dotenv from "dotenv";
@@ -69,4 +73,5 @@ export {
   ROOTS,
   VALID_LOCALES,
   ACTIVE_LOCALES,
+  DEFAULT_LOCALE,
 };

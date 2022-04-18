@@ -4,6 +4,7 @@ import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 const specs = require("browser-specs");
+const web = require("../kumascript/src/api/web.js");
 
 /** Extract and mutate the $ if it as a "Quick_links" section.
  * But only if it exists.
@@ -444,6 +445,9 @@ function _addSingleSpecialSection($) {
               }
             }
           }
+          info.sort((a, b) =>
+            _compareVersions(_getFirstVersion(b), _getFirstVersion(a))
+          );
         }
       }
     }
@@ -461,6 +465,60 @@ function _addSingleSpecialSection($) {
         },
       },
     ];
+  }
+
+  /**
+   * @param {object} support - {bcd.SimpleSupportStatement}
+   * @returns {string}
+   */
+  function _getFirstVersion(support) {
+    if (typeof support.version_added === "string") {
+      return support.version_added;
+    } else if (typeof support.version_removed === "string") {
+      return support.version_removed;
+    } else {
+      return "0";
+    }
+  }
+
+  /**
+   * @param {string} a
+   * @param {string} b
+   */
+  function _compareVersions(a, b) {
+    const x = _splitVersion(a);
+    const y = _splitVersion(b);
+
+    return _compareNumberArray(x, y);
+  }
+
+  /**
+   * @param {number[]} a
+   * @param {number[]} b
+   * @return {number}
+   */
+  function _compareNumberArray(a, b) {
+    while (a.length || b.length) {
+      const x = a.shift() || 0;
+      const y = b.shift() || 0;
+      if (x !== y) {
+        return x - y;
+      }
+    }
+
+    return 0;
+  }
+
+  /**
+   * @param {string} version
+   * @return {number[]}
+   */
+  function _splitVersion(version) {
+    if (version.startsWith("≤")) {
+      version = version.slice(1);
+    }
+
+    return version.split(".").map(Number);
   }
 
   function _buildSpecialSpecSection() {
@@ -504,6 +562,14 @@ function _addSingleSpecialSection($) {
         };
         if (spec) {
           specificationsData.title = spec.title;
+        } else {
+          const specList = web.getJSONData("SpecData");
+          const titleFromSpecData = Object.keys(specList).find(
+            (key) => specList[key]["url"] === specURL.split("#")[0]
+          );
+          if (titleFromSpecData) {
+            specificationsData.title = titleFromSpecData;
+          }
         }
 
         return specificationsData;
@@ -578,6 +644,12 @@ function _addSectionProse($) {
       }
     }
   }
+
+  if (id) {
+    // Remove trailing underscores (https://github.com/mdn/yari/issues/5492).
+    id = id.replace(/_+$/g, "");
+  }
+
   const value = {
     id,
     title,

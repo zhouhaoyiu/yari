@@ -66,8 +66,13 @@
   --form-elem-height: 2rem;
 
   /* Major Components */
+  --sticky-header-height: 0;
   --top-nav-height: 4rem;
   --icon-size: 1rem;
+}
+
+:target {
+  scroll-margin-top: var(--sticky-header-height);
 }
 
 body {
@@ -172,6 +177,7 @@ u {
 
 *::-webkit-scrollbar {
   width: 12px;
+  height: 12px;
   background-color: var(--scrollbar-bg, auto);
 }
 
@@ -179,6 +185,19 @@ u {
   border-radius: 10px;
   border: 2px solid var(--scrollbar-bg, auto);
   background: var(--scrollbar-color);
+}
+
+*::-webkit-scrollbar-corner {
+  background-color: var(--scrollbar-bg, auto);
+}
+
+.plus .dark,
+.plus {
+  --text-link: var(--plus-accent-color);
+  --category-color: var(--plus-accent-color);
+  --category-color-background: var(--plus-accent-background-color);
+  --code-color: var(--plus-code-color);
+  --mark-color: var(--plus-mark-color);
 }
 
 .category-html {

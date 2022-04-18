@@ -2,6 +2,8 @@
 @use "../../vars" as *;
 
 .header-search {
+  max-width: 100%;
+
   .search-widget {
     position: relative;
     width: 100%;
@@ -36,6 +38,17 @@
       50% {
         text-decoration-line: underline;
       }
+    }
+
+    @media screen and (min-width: $screen-md) {
+      &:invalid {
+        width: 1rem;
+      }
+    }
+
+    &:focus,
+    &:valid {
+      width: inherit;
     }
 
     &:invalid,
@@ -86,9 +99,11 @@
     color: var(--icon-critical);
     margin: 0;
   }
+}
 
+.header-search,
+.homepage-hero-search {
   .search-results {
-    color: var(--text-primary);
     border: 1px solid var(--border-secondary);
     border-radius: var(--elem-radius);
     box-shadow: var(--shadow-01);
@@ -98,12 +113,14 @@
     width: 100%;
     z-index: var(--z-index-search-results);
 
-    .indexing-warning {
-      color: var(--icon-warning);
+    &,
+    a[href],
+    mark {
+      color: var(--text-primary);
     }
 
-    div {
-      padding: 0.5rem;
+    .indexing-warning {
+      color: var(--icon-warning);
     }
 
     .nothing-found {
@@ -117,6 +134,7 @@
 
     .result-item {
       border-bottom: 1px solid var(--border-secondary);
+      padding: 0.5rem;
       word-break: break-word;
       background: var(--background-secondary);
       font: var(--type-body-m);
@@ -151,7 +169,6 @@
 
     mark {
       background-color: var(--mark-color);
-      color: var(--text-primary);
     }
 
     small {
@@ -169,10 +186,12 @@
 }
 
 .search-form {
+  display: flex;
   position: relative;
 }
 
-.button.search-button {
+.button.search-button,
+.button.clear-search-button {
   --button-color: var(--icon-secondary);
   --button-height: 1.5rem;
   --button-padding: 0;
@@ -186,15 +205,23 @@
   }
 
   @media screen and (min-width: $screen-md) {
-    right: 3.5rem;
+    right: 1.2rem;
     width: 1.5rem;
   }
 }
 
-.close-search-button {
+.button.clear-search-button {
   display: none;
+}
 
-  @media screen and (min-width: $screen-md) {
-    display: block;
+/* When the search input has focus or has content,
+   show the clear search button */
+.header-search .search-input-field {
+  &:valid,
+  &:focus {
+    & ~ .button.clear-search-button {
+      display: block;
+      right: 2.8rem;
+    }
   }
 }

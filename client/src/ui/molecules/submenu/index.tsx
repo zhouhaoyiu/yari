@@ -4,12 +4,13 @@ import React from "react";
 type SubmenuItem = {
   component?: () => JSX.Element;
   description?: string;
-  extraClasses?: string;
+  extraClasses?: string | null;
   hasIcon?: boolean;
   iconClasses?: string;
   label?: string;
   subText?: string;
   url?: string;
+  dot?: string;
 };
 
 type MenuEntry = {
@@ -42,15 +43,26 @@ export const Submenu = ({
             <li
               key={key}
               role="none"
-              className={`${item.extraClasses || undefined} ${
+              className={`${item.extraClasses || ""} ${
                 isDropdown ? "dropdown-item" : ""
               }`}
             >
               {item.component ? (
                 <item.component key={key} />
               ) : item.url ? (
-                <a href={item.url} className="submenu-item" role="menuitem">
+                <a
+                  href={item.url}
+                  className={`submenu-item ${
+                    item.url.startsWith("https://") ? "external" : ""
+                  }`}
+                  role="menuitem"
+                >
                   {item.hasIcon && <div className={item.iconClasses} />}
+                  {item.dot && (
+                    <span className="visually-hidden submenu-item-dot">
+                      {item.dot}
+                    </span>
+                  )}
                   <div className="submenu-content-container">
                     <div className="submenu-item-heading">{item.label}</div>
                     {item.description && (

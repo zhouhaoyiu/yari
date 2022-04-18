@@ -16,20 +16,21 @@ export function isTruthy<T>(t: T | false | undefined | null): t is T {
 interface Feature {
   name: string;
   compat: bcd.CompatStatement;
-  isRoot: boolean;
+  depth: number;
 }
 
 export function listFeatures(
   identifier: bcd.Identifier,
   parentName: string = "",
-  rootName: string = ""
+  rootName: string = "",
+  depth: number = 0
 ): Feature[] {
   const features: Feature[] = [];
   if (rootName && identifier.__compat) {
     features.push({
       name: rootName,
       compat: identifier.__compat,
-      isRoot: true,
+      depth,
     });
   }
 
@@ -38,9 +39,9 @@ export function listFeatures(
       features.push({
         name: parentName ? `${parentName}.${subName}` : subName,
         compat: subIdentifier.__compat,
-        isRoot: parentName !== "",
+        depth: depth + 1,
       });
-      features.push(...listFeatures(subIdentifier, subName));
+      features.push(...listFeatures(subIdentifier, subName, "", depth + 1));
     }
   }
   return features;
@@ -61,4 +62,53 @@ export function versionIsPreview(
   }
 
   return false;
+}
+
+export function hasNoteworthyNotes(support: bcd.SimpleSupportStatement) {
+  return (
+    support.notes?.length &&
+    !support.version_removed &&
+    !support.partial_implementation
+  );
+}
+
+function hasLimitation(support: bcd.SimpleSupportStatement) {
+  return (
+    support.partial_implementation ||
+    support.alternative_name ||
+    support.flags ||
+    support.prefix ||
+    support.version_removed ||
+    support.notes
+  );
+}
+
+export function isOnlySupportedWithAltName(
+  support: bcd.SupportStatement | undefined
+) {
+  return (
+    support &&
+    getFirst(support).alternative_name &&
+    !asList(support).some((item) => isFullySupportedWithoutLimitation(item))
+  );
+}
+
+export function isOnlySupportedWithPrefix(
+  support: bcd.SupportStatement | undefined
+) {
+  return (
+    support &&
+    getFirst(support).prefix &&
+    !asList(support).some((item) => isFullySupportedWithoutLimitation(item))
+  );
+}
+
+export function isFullySupportedWithoutLimitation(
+  support: bcd.SimpleSupportStatement
+) {
+  return support.version_added && !hasLimitation(support);
+}
+
+export function isNotSupportedAtAll(support: bcd.SimpleSupportStatement) {
+  return !support.version_added && !hasLimitation(support);
 }

@@ -95,6 +95,9 @@ export const CSP_DIRECTIVES = {
   "connect-src": [
     "'self'",
 
+    "updates.developer.allizom.org",
+    "updates.developer.mozilla.org",
+
     "www.google-analytics.com",
     "stats.g.doubleclick.net",
   ],
@@ -120,7 +123,9 @@ export const CSP_DIRECTIVES = {
     // Avatars
     "*.githubusercontent.com",
     "*.googleusercontent.com",
+    "*.gravatar.com",
     "mozillausercontent.com",
+    "firefoxusercontent.com",
     "profile.stage.mozaws.net",
     "profile.accounts.firefox.com",
 
@@ -140,7 +145,8 @@ export const CSP_DIRECTIVES = {
   ],
   "manifest-src": ["'self'"],
   "media-src": ["'self'", "archive.org", "videos.cdn.mozilla.net"],
-  "worker-src": ["'none'"],
+  "child-src": ["'self'"],
+  "worker-src": ["'self'"],
 };
 
 export const cspToString = (csp) =>

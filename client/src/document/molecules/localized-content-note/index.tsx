@@ -28,6 +28,10 @@ export function LocalizedContentNote({
       linkText:
         "Эта страница была переведена с английского языка силами сообщества. Вы тоже можете внести свой вклад, присоединившись к русскоязычному сообществу MDN Web Docs.",
     },
+    "zh-CN": {
+      linkText:
+        "此页面由社区从英文翻译而来。了解更多并加入 MDN Web Docs 社区。",
+    },
   };
   const inactiveLocaleNoteContent = {
     de: {
@@ -53,7 +57,7 @@ export function LocalizedContentNote({
       inactiveLocaleNoteContent["en-US"].linkText;
   const url = isActive
     ? "/en-US/docs/MDN/Contribute/Localize#active_locales"
-    : "https://github.com/mdn/translated-content#promoting-an-inactive-locale-to-tier-1";
+    : "https://github.com/mdn/translated-content/blob/main/PEERS_GUIDELINES.md#activating-a-locale";
 
   const type = isActive ? "neutral" : "warning";
   return <NoteBanner linkText={linkText} url={url} type={type} />;

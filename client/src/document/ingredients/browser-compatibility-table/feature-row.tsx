@@ -1,7 +1,18 @@
 import React, { useContext } from "react";
 import type bcd from "@mdn/browser-compat-data/types";
 import { BrowserInfoContext } from "./browser-info";
-import { asList, getFirst, isTruthy, versionIsPreview } from "./utils";
+import {
+  asList,
+  getFirst,
+  hasNoteworthyNotes,
+  isFullySupportedWithoutLimitation,
+  isNotSupportedAtAll,
+  isOnlySupportedWithAltName,
+  isOnlySupportedWithPrefix,
+  isTruthy,
+  versionIsPreview,
+} from "./utils";
+import { LEGEND_LABELS } from "./legend";
 
 // Yari builder will attach extra keys from the compat data
 // it gets from @mdn/browser-compat-data. These are "Yari'esque"
@@ -71,17 +82,17 @@ function StatusIcons({ status }: { status: bcd.StatusBlock }) {
     status.experimental && {
       title: "Experimental. Expect behavior to change in the future.",
       text: "Experimental",
-      iconClassName: "icon-preview",
+      iconClassName: "icon-experimental",
     },
     status.deprecated && {
       title: "Deprecated. Not for use in new websites.",
       text: "Deprecated",
-      iconClassName: "icon-thumbs-down",
+      iconClassName: "icon-deprecated",
     },
     !status.standard_track && {
       title: "Non-standard. Expect poor cross-browser support.",
       text: "Non-standard",
-      iconClassName: "icon-note-warning",
+      iconClassName: "icon-nonstandard",
     },
   ].filter(isTruthy);
   return icons.length === 0 ? null : (
@@ -127,8 +138,10 @@ const CellText = React.memo(
   }) => {
     const currentSupport = getFirst(support);
 
-    const added = currentSupport && currentSupport.version_added;
-    const removed = currentSupport && currentSupport.version_removed;
+    const added = currentSupport?.version_added ?? null;
+    const removed = currentSupport?.version_removed ?? null;
+
+    const browserReleaseDate = getSupportBrowserReleaseDate(support);
 
     let status:
       | { isSupported: "unknown" }
@@ -154,6 +167,11 @@ const CellText = React.memo(
         if (versionIsPreview(added, browser)) {
           status = {
             isSupported: "preview",
+            label: labelFromString(added, browser),
+          };
+        } else if (currentSupport?.flags?.length) {
+          status = {
+            isSupported: "no",
             label: labelFromString(added, browser),
           };
         } else {
@@ -213,30 +231,40 @@ const CellText = React.memo(
         label = "?";
         break;
     }
+    const supportClassName = getSupportClassName(support, browser);
 
     return (
       <>
         <span className="icon-wrap">
           <abbr
             className={`
-            bc-level-${getSupportClassName(currentSupport, browser)}
+            bc-level-${supportClassName}
             icon
-            icon-${getSupportClassName(currentSupport, browser)}`}
+            icon-${supportClassName}`}
             title={title}
           >
             <span className="bc-support-level">{title}</span>
           </abbr>
         </span>
         <span className="bc-browser-name">{browser.name}</span>
-        <span className="bc-version-label">{label}</span>
+        <span
+          className="bc-version-label"
+          title={
+            browserReleaseDate ? `Released ${browserReleaseDate}` : undefined
+          }
+        >
+          {label}
+        </span>
       </>
     );
   }
 );
 
 function Icon({ name }: { name: string }) {
+  const title = LEGEND_LABELS[name] ?? name;
+
   return (
-    <abbr className="only-icon" title={name}>
+    <abbr className="only-icon" title={title}>
       <span>{name}</span>
       <i className={`icon icon-${name}`} />
     </abbr>
@@ -250,8 +278,9 @@ function CellIcons({ support }: { support: bcd.SupportStatement | undefined }) {
   }
   return (
     <div className="bc-icons">
-      {supportItem.prefix && <Icon name="prefix" />}
-      {supportItem.alternative_name && <Icon name="altname" />}
+      {isOnlySupportedWithPrefix(support) && <Icon name="prefix" />}
+      {hasNoteworthyNotes(supportItem) && <Icon name="footnote" />}
+      {isOnlySupportedWithAltName(support) && <Icon name="altname" />}
       {supportItem.flags && <Icon name="disabled" />}
     </div>
   );
@@ -308,9 +337,14 @@ function getNotes(
 ) {
   if (support) {
     return asList(support)
+      .slice()
+      .reverse()
       .flatMap((item, i) => {
         const supportNotes = [
-          item.version_removed
+          item.version_removed &&
+          !asList(support).some(
+            (otherItem) => otherItem.version_added === item.version_removed
+          )
             ? {
                 iconName: "disabled",
                 label: (
@@ -359,18 +393,13 @@ function getNotes(
           // If we encounter nothing else than the required `version_added` and
           // `release_date` properties, assume full support.
           // EDIT 1-5-21: if item.version_added doesn't exist, assume no support.
-          Object.keys(item).filter(
-            (x) => !["version_added", "release_date"].includes(x)
-          ).length === 0 &&
-          item.version_added &&
+          isFullySupportedWithoutLimitation(item) &&
           !versionIsPreview(item.version_added, browser)
             ? {
                 iconName: "footnote",
                 label: "Full support",
               }
-            : Object.keys(item).filter(
-                (x) => !["version_added", "release_date"].includes(x)
-              ).length === 0 && !item.version_added
+            : isNotSupportedAtAll(item)
             ? {
                 iconName: "footnote",
                 label: "No support",
@@ -432,7 +461,6 @@ function CompatCell({
   locale: string;
 }) {
   const supportClassName = getSupportClassName(support, browserInfo);
-  const browserReleaseDate = getSupportBrowserReleaseDate(support);
   // NOTE: 1-5-21, I've forced hasNotes to return true, in order to
   // make the details view open all the time.
   // Whenever the support statement is complex (array with more than one entry)
@@ -446,44 +474,29 @@ function CompatCell({
   //         item.prefix || item.notes || item.alternative_name || item.flags
   //     ));
   const notes = getNotes(browserInfo, support!);
+  const content = (
+    <>
+      <CellText {...{ support }} browser={browserInfo} />
+      <CellIcons support={support} />
+      {showNotes && (
+        <dl className="bc-notes-list bc-history bc-history-mobile">{notes}</dl>
+      )}
+    </>
+  );
+
   return (
     <>
       <td
-        className={`bc-icon-cell bc-browser-${browserId} bc-supports-${supportClassName} ${
+        className={`bc-support bc-browser-${browserId} bc-supports-${supportClassName} ${
           notes ? "bc-has-history" : ""
         }`}
         aria-expanded={showNotes ? "true" : "false"}
-        tabIndex={notes ? 0 : undefined}
-        onClick={
-          notes
-            ? () => {
-                onToggle();
-              }
-            : undefined
-        }
-        title={
-          browserReleaseDate ? `Released ${browserReleaseDate}` : undefined
-        }
+        onClick={notes ? () => onToggle() : undefined}
       >
-        <CellText {...{ support }} browser={browserInfo} />
-        <CellIcons support={support} />
-        {notes && (
-          <button
-            type="button"
-            title="Open implementation notes"
-            className={`bc-history-link ${
-              showNotes ? "bc-history-link-inverse" : ""
-            }`}
-          >
-            <span>Open</span>
-            <i className="ic-history" aria-hidden="true" />
-          </button>
-        )}
-        {showNotes && (
-          <dl className="bc-notes-list bc-history bc-history-mobile">
-            {notes}
-          </dl>
-        )}
+        <button type="button" disabled={!notes} title="Toggle history">
+          {content}
+          <span className="offscreen">Toggle history</span>
+        </button>
       </td>
     </>
   );
@@ -502,7 +515,7 @@ export const FeatureRow = React.memo(
     feature: {
       name: string;
       compat: CompatStatementExtended;
-      isRoot: boolean;
+      depth: number;
     };
     browsers: bcd.BrowserNames[];
     activeCell: number | null;
@@ -515,7 +528,7 @@ export const FeatureRow = React.memo(
       throw new Error("Missing browser info");
     }
 
-    const { name, compat, isRoot } = feature;
+    const { name, compat, depth } = feature;
     const title = compat.description ? (
       <span dangerouslySetInnerHTML={{ __html: compat.description }} />
     ) : (
@@ -534,7 +547,7 @@ export const FeatureRow = React.memo(
           {compat.status && <StatusIcons status={compat.status} />}
         </div>
       );
-    } else if (compat.mdn_url && !isRoot) {
+    } else if (compat.mdn_url && depth > 0) {
       titleNode = (
         <a href={compat.mdn_url} className="bc-table-row-header">
           {title}
@@ -553,7 +566,9 @@ export const FeatureRow = React.memo(
     return (
       <>
         <tr>
-          <th scope="row">{titleNode}</th>
+          <th className={`bc-feature bc-feature-depth-${depth}`} scope="row">
+            {titleNode}
+          </th>
           {browsers.map((browser, i) => (
             <CompatCell
               key={browser}

@@ -3,3 +3,5 @@ client/build/
 dist/
 ssr/dist/
 libs/
+client/public/service-worker.js
+client/public/

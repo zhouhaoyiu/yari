@@ -20,7 +20,7 @@ from .constants import (
     MANUAL_PREFIXES,
     MAX_WORKERS_PARALLEL_UPLOADS,
 )
-from .utils import StopWatch, fmt_size, iterdir, log
+from .utils import StopWatch, fmt_size, iterdir, log, slug_to_folder
 
 S3_MULTIPART_THRESHOLD = S3TransferConfig().multipart_threshold
 S3_MULTIPART_CHUNKSIZE = S3TransferConfig().multipart_chunksize
@@ -322,14 +322,18 @@ class BucketManager:
             # its URL. Also, note that the content type is not determined by the
             # suffix of the S3 key, but is explicitly set from the full filepath
             # when uploading the file.
-            file_path = file_path.parent
+            # The only exception to this is the root level "index.html". We need that
+            # to cache it in our service worker.
+            if file_path.parent != build_directory:  # not the root level "index.html"
+                file_path = file_path.parent
         return f"{self.key_prefix}{str(file_path.relative_to(build_directory)).lower()}"
 
     def get_redirect_keys(self, from_url, to_url):
-        return (
-            f"{self.key_prefix}{from_url.strip('/').lower()}",
-            f"/{to_url.strip('/')}" if to_url.startswith("/") else to_url,
+        cleaned_from_path = slug_to_folder(from_url.strip("/"))
+        cleaned_to_url_or_path = (
+            slug_to_folder(to_url.rstrip("/")) if to_url.startswith("/") else to_url
         )
+        return (f"{self.key_prefix}{cleaned_from_path}", cleaned_to_url_or_path)
 
     def get_bucket_objects(self):
         result = {}
@@ -406,13 +410,6 @@ class BucketManager:
                 )
             done.add(key)
 
-        # Prepare a computation of what the root /index.html file would be
-        # called as a S3 key. Do this once so it becomes a quicker operation
-        # later when we compare *each* generated key to see if it matches this.
-        root_index_html_as_key = self.get_key(
-            build_directory, build_directory / "index.html"
-        )
-
         # Walk the build_directory and yield file upload tasks.
         for fp in iterdir(build_directory):
             # Exclude any files that aren't artifacts of the build.
@@ -424,16 +421,6 @@ class BucketManager:
             if key in done:
                 # This can happen since we might have explicitly processed this
                 # in the for-loop above. See comment at the beginning of this method.
-                continue
-
-            # The root index.html file is never useful. It's not the "home page"
-            # because the home page is actually `/$locale/` since `/` is handled
-            # specifically by the CDN.
-            # The client/build/index.html is actually just a template from
-            # create-react-app, used to server-side render all the other pages.
-            # But we don't want to upload it S3. So, delete it before doing the
-            # deployment step.
-            if root_index_html_as_key == key:
                 continue
 
             if for_counting_only:

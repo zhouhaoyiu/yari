@@ -5,7 +5,7 @@ import { readChunkSync } from "read-chunk";
 import imageType from "image-type";
 import isSvg from "is-svg";
 
-import { ROOTS } from "./constants.js";
+import { ROOTS, DEFAULT_LOCALE } from "./constants.js";
 import { memoize, slugToFolder } from "./utils.js";
 
 function isImage(filePath) {
@@ -44,4 +44,16 @@ function findByURL(url) {
   return find(urlToFilePath(url));
 }
 
-export { findByURL };
+function findByURLWithFallback(url) {
+  let filePath = findByURL(url);
+  const urlParts = url.split("/");
+  const locale = urlParts[1].toLowerCase();
+  if (!filePath && locale !== DEFAULT_LOCALE) {
+    urlParts[1] = DEFAULT_LOCALE;
+    const defaultLocaleURL = urlParts.join("/");
+    filePath = findByURL(defaultLocaleURL);
+  }
+  return filePath;
+}
+
+export { findByURL, findByURLWithFallback };

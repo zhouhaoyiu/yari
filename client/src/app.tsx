@@ -5,7 +5,7 @@ import { Routes, Route, useLocation, useMatch } from "react-router-dom";
 // and applied before any component specific style
 import "./app.scss";
 
-import { MDN_APP, CRUD_MODE, MDN_APP_DESKTOP, ENABLE_PLUS } from "./constants";
+import { CRUD_MODE, PLUS_IS_ENABLED } from "./constants";
 import { Homepage } from "./homepage";
 import { Document } from "./document";
 import { A11yNav } from "./ui/molecules/a11y-nav";
@@ -17,13 +17,15 @@ import { PageContentContainer } from "./ui/atoms/page-content";
 import { PageNotFound } from "./page-not-found";
 import { Plus } from "./plus";
 import { About } from "./about";
-import { AppSettings } from "./app-settings";
+import { OfflineSettings } from "./offline-settings";
 import { docCategory } from "./utils";
 import { Contribute } from "./community";
 import { ContributorSpotlight } from "./contributor-spotlight";
-import { Banner } from "./banners";
+
+import { Banner, hasActiveBanners } from "./banners";
 
 const AllFlaws = React.lazy(() => import("./flaws"));
+const AllTraits = React.lazy(() => import("./traits"));
 const Translations = React.lazy(() => import("./translations"));
 const DocumentEdit = React.lazy(() => import("./document/forms/edit"));
 const DocumentCreate = React.lazy(() => import("./document/forms/create"));
@@ -45,18 +47,12 @@ function Layout({ pageType, children }) {
   return (
     <>
       <A11yNav />
-      {/* Commented out for now. Kept as a record/reminder of how we implement
-       banners. As of May 27, 2021 we don't have any banners to show. At all.
-
-       Note, if you do uncomment banners again (because there's one to possible
-       display), remember to go to
-       */}
-      {!isServer && <Banner />}
+      {!isServer && hasActiveBanners && <Banner />}
       <div className={`page-wrapper  ${category || ""} ${pageType}`}>
         <TopNavigation />
         {children}
       </div>
-      {!MDN_APP && <Footer />}
+      <Footer />
     </>
   );
 }
@@ -69,9 +65,7 @@ function StandardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Layout pageType={`standard-page ${extraClasses ? extraClasses : ""}`}>
-      {children}
-    </Layout>
+    <Layout pageType={`standard-page ${extraClasses || ""}`}>{children}</Layout>
   );
 }
 function DocumentLayout({ children }) {
@@ -175,6 +169,14 @@ export function App(appProps) {
                   }
                 />
                 <Route
+                  path="/_traits/*"
+                  element={
+                    <StandardLayout>
+                      <AllTraits />
+                    </StandardLayout>
+                  }
+                />
+                <Route
                   path="/_edit/*"
                   element={
                     <StandardLayout>
@@ -254,7 +256,7 @@ export function App(appProps) {
                 </StandardLayout>
               }
             />
-            {ENABLE_PLUS && (
+            {PLUS_IS_ENABLED && (
               <Route
                 path="/plus/*"
                 element={
@@ -264,12 +266,12 @@ export function App(appProps) {
                 }
               />
             )}
-            {MDN_APP_DESKTOP && (
+            {PLUS_IS_ENABLED && (
               <Route
-                path="/app-settings"
+                path="/offline-settings"
                 element={
                   <StandardLayout>
-                    <AppSettings {...appProps} />
+                    <OfflineSettings {...appProps} />
                   </StandardLayout>
                 }
               />

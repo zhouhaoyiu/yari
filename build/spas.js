@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import frontmatter from "front-matter";
-import cheerio from "cheerio";
 
 const { m2h } = require("../markdown");
 
@@ -16,10 +15,11 @@ import { BUILD_OUT_ROOT } from "./constants.js";
 
 import { createRequire } from "module";
 import got from "got";
+import { splitSections } from "./utils.js";
 
 const require = createRequire(import.meta.url);
 // eslint-disable-next-line node/no-missing-require
-const { renderHTML } = require("../ssr/dist/main.cjs");
+const { renderHTML } = require("../ssr/dist/main");
 
 const contributorSpotlightRoot = CONTRIBUTOR_SPOTLIGHT_ROOT;
 
@@ -39,32 +39,8 @@ async function buildContributorSpotlight(options) {
 
     const frontMatter = frontmatter(markdown);
     const contributorHTML = await m2h(frontMatter.body, locale);
-    const $ = cheerio.load(`<div id="_body">${contributorHTML}</div>`);
 
-    const blocks = [];
-
-    const section = cheerio
-      .load("<div></div>", { decodeEntities: false })("div")
-      .eq(0);
-
-    const iterable = [...$("#_body")[0].childNodes];
-    let c = 0;
-    iterable.forEach((child) => {
-      if (child.tagName === "h2") {
-        if (c) {
-          blocks.push(section.clone());
-          section.empty();
-          c = 0;
-        }
-      }
-      c++;
-      section.append(child);
-    });
-    if (c) {
-      blocks.push(section.clone());
-    }
-
-    const sections = blocks.map((block) => block.html().trim());
+    const { sections } = splitSections(contributorHTML);
 
     const hyData = {
       sections: sections,
@@ -107,15 +83,6 @@ async function buildContributorSpotlight(options) {
   }
 }
 
-function getLanguages() {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  return new Map(
-    Object.entries(
-      JSON.parse(fs.readFileSync(path.join(__dirname, "languages.json")))
-    )
-  );
-}
-
 async function buildSPAs(options) {
   let buildCount = 0;
 
@@ -145,12 +112,55 @@ async function buildSPAs(options) {
       if (!fs.statSync(path.join(root, locale)).isDirectory()) {
         continue;
       }
+
+      const MDN_PLUS_TITLE = "MDN Plus";
       const SPAs = [
         { prefix: "search", pageTitle: "Search" },
-        { prefix: "plus", pageTitle: "Plus", noIndexing: true },
+        { prefix: "plus", pageTitle: MDN_PLUS_TITLE },
         {
-          prefix: "plus/collection",
-          pageTitle: "Collection",
+          prefix: "plus/collections",
+          pageTitle: `Collections | ${MDN_PLUS_TITLE}`,
+          noIndexing: true,
+        },
+        {
+          prefix: "plus/collections/frequently_viewed",
+          pageTitle: `Frequently viewed articles | ${MDN_PLUS_TITLE}`,
+          noIndexing: true,
+        },
+        {
+          prefix: "plus/docs/collections",
+          pageTitle: `Collections | ${MDN_PLUS_TITLE}`,
+        },
+        {
+          prefix: "plus/docs/notifications",
+          pageTitle: `Notifications | ${MDN_PLUS_TITLE}`,
+        },
+        {
+          prefix: "plus/docs/offline",
+          pageTitle: `MDN Offline | ${MDN_PLUS_TITLE}`,
+        },
+        {
+          prefix: "plus/docs/faq",
+          pageTitle: `FAQ | ${MDN_PLUS_TITLE}`,
+        },
+        {
+          prefix: "plus/notifications",
+          pageTitle: `Notifications | ${MDN_PLUS_TITLE}`,
+          noIndexing: true,
+        },
+        {
+          prefix: "plus/notifications/starred",
+          pageTitle: `Starred | ${MDN_PLUS_TITLE}`,
+          noIndexing: true,
+        },
+        {
+          prefix: "plus/notifications/watched",
+          pageTitle: `Watch list | ${MDN_PLUS_TITLE}`,
+          noIndexing: true,
+        },
+        {
+          prefix: "plus/offline",
+          pageTitle: `MDN Offline | ${MDN_PLUS_TITLE}`,
           noIndexing: true,
         },
         { prefix: "about", pageTitle: "About MDN" },
@@ -176,6 +186,71 @@ async function buildSPAs(options) {
       }
     }
   }
+
+  // Building the MDN Plus pages.
+
+  /**
+   *
+   * @param {string} dirpath
+   * @param {string} slug
+   * @param {string} title
+   */
+  async function buildStaticPages(dirpath, slug, title = "MDN") {
+    for (const file of fs.readdirSync(dirpath)) {
+      const filepath = path.join(dirpath, file);
+      const stat = fs.lstatSync(filepath);
+      const page = file.split(".")[0];
+
+      if (stat.isDirectory()) {
+        await buildStaticPages(filepath, `${slug}/${page}`, title);
+        return;
+      }
+
+      const locale = "en-us";
+      const markdown = fs.readFileSync(filepath, "utf8");
+
+      const frontMatter = frontmatter(markdown);
+      const rawHTML = await m2h(frontMatter.body, locale);
+
+      const { sections, toc } = splitSections(rawHTML);
+
+      const url = `/${locale}/${slug}/${page}`;
+      const hyData = {
+        id: page,
+        ...frontMatter.attributes,
+        sections,
+        toc,
+      };
+      const context = {
+        hyData,
+        pageTitle: `${frontMatter.attributes.title || ""} | ${title}`,
+      };
+
+      const html = renderHTML(url, context);
+      const outPath = path.join(
+        BUILD_OUT_ROOT,
+        locale,
+        ...slug.split("/"),
+        page
+      );
+      fs.mkdirSync(outPath, { recursive: true });
+      const filePath = path.join(outPath, "index.html");
+      fs.writeFileSync(filePath, html);
+      buildCount++;
+      if (options.verbose) {
+        console.log("Wrote", filePath);
+      }
+      const filePathContext = path.join(outPath, "index.json");
+      fs.writeFileSync(filePathContext, JSON.stringify(context));
+    }
+  }
+
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  await buildStaticPages(
+    path.join(__dirname, "../copy/plus"),
+    "plus/docs",
+    "MDN Plus"
+  );
 
   // Build all the home pages in all locales.
   // Fetch merged content PRs for the latest contribution section.

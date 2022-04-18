@@ -29,8 +29,10 @@ const { renderHTML } = require("../ssr/dist/main.cjs");
 
 import { CSP_VALUE, DEFAULT_LOCALE } from "../libs/constants/index.js";
 
-import { STATIC_ROOT, PROXY_HOSTNAME, FAKE_V1_API } from "./constants.js";
+import { STATIC_ROOT, PROXY_HOSTNAME, FAKE_V1_API, CONTENT_HOSTNAME,
+  OFFLINE_CONTENT, } from "./constants.js";
 import documentRouter from "./document.js";
+import documentTraitsRouter from "./traits.js";
 import { router as fakeV1APIRouter } from "./fake-v1-api.js";
 import { searchIndexRoute } from "./search-index.js";
 import flawsRoute from "./flaws.js";
@@ -87,6 +89,15 @@ const proxy = FAKE_V1_API
       // timeout: 20000,
     });
 
+const contentProxy =
+  CONTENT_HOSTNAME &&
+  createProxyMiddleware({
+    target: `https://${CONTENT_HOSTNAME}`,
+    changeOrigin: true,
+    // proxyTimeout: 20000,
+    // timeout: 20000,
+  });
+
 app.use("/api/v1", proxy);
 // This is an exception and it's only ever relevant in development.
 app.use("/users/*", proxy);
@@ -114,6 +125,8 @@ app.post(
 );
 
 app.use("/_document", documentRouter);
+
+app.use("/_traits", documentTraitsRouter);
 
 app.get("/_open", (req, res) => {
   const { line, column, filepath, url } = req.query;
@@ -180,7 +193,7 @@ app.get("/*/contributors.txt", async (req, res) => {
   );
 });
 
-app.get("/*", async (req, res) => {
+app.get("/*", async (req, res, ...args) => {
   if (req.url.startsWith("/_")) {
     // URLs starting with _ is exclusively for the meta-work and if there
     // isn't already a handler, it's something wrong.
@@ -190,6 +203,13 @@ app.get("/*", async (req, res) => {
   // If the catch-all gets one of these something's gone wrong
   if (req.url.startsWith("/static")) {
     return res.status(404).send("Page not found");
+  }
+  if (OFFLINE_CONTENT) {
+    return res.status(404).send("Offline");
+  }
+  if (contentProxy) {
+    console.log(`proxying: ${req.url}`);
+    return contentProxy(req, res, ...args);
   }
 
   if (req.url.includes("/_sample_.")) {
@@ -212,9 +232,11 @@ app.get("/*", async (req, res) => {
   // TODO: Would be nice to have a list of all supported file extensions
   // in a constants file.
   if (/\.(png|webp|gif|jpe?g|svg)$/.test(req.path)) {
-    // Remember, Image.findByURL() will return the absolute file path
+    // Remember, Image.findByURLWithFallback() will return the absolute file path
     // iff it exists on disk.
-    const filePath = Image.findByURL(req.path);
+    // Using a "fallback" strategy here so that images embedded in live samples
+    // are resolved if they exist in en-US but not in <locale>
+    const filePath = Image.findByURLWithFallback(req.path);
     if (filePath) {
       // The second parameter to `send()` has to be either a full absolute
       // path or a path that doesn't start with `../` otherwise you'd

@@ -29,13 +29,13 @@ Before you can start working with Yari, you need to:
 1.  Clone the forked repositories to your computer using the following commands
     (replace `[your account]` with the account you forked the repositories to):
 
-            git clone https://github.com/[your_account]/content.git
-            git clone https://github.com/[your_account]/yari.git
+        git clone https://github.com/[your_account]/content.git
+        git clone https://github.com/[your_account]/yari.git
 
-        Take a note of the file path to the location where you've cloned that
-        repo before moving on.
+    Take a note of the file path to the location where you've cloned that
+    repo before moving on.
 
-    <!-- markdownlint-enable list-marker-space -->
+<!-- markdownlint-enable list-marker-space -->
 
 To run Yari locally, you'll first need to install its dependencies and build the
 app locally. Do this like so:
@@ -108,8 +108,8 @@ in the [mdn/content repository](https://github.com/mdn/content).
 
 Yari does a number of things, the most important of which is to render and serve
 the MDN content found in the [content repo](https://github.com/mdn/content).
-Each document is stored as an `index.html` file that contains metadata presented
-as YAML [front-matter](https://github.com/mdn/content#fundamental-concepts)
+Each document is stored as an `index.md` (recommended) or `index.html` file that
+contains metadata presented as YAML [front-matter](https://github.com/mdn/content#fundamental-concepts)
 followed by the document source.
 
 The builder converts these "source files" into "build files" using a CLI tool
@@ -158,7 +158,7 @@ And conveniently, if you're not even interested in what the flaws were, run:
 
 When you ran `yarn` for the first time (`yarn` is an alias for
 `yarn install`) it automatically sets up a `git` pre-commit hook that uses
-`pretty-quick` — a wrapper for `prettier` that checks only the files in the git
+`lint-staged` — a wrapper for `prettier` that checks only the files in the git
 commit.
 
 If you have doubts about formatting, submit your pull request anyway. If you

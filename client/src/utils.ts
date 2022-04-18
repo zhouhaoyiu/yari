@@ -1,4 +1,10 @@
-import { IEX_DOMAIN } from "./constants";
+import { UserData } from "./user-context";
+import {
+  IEX_DOMAIN,
+  PLUS_ENABLED_COUNTRIES,
+  PLUS_IS_AVAILABLE_OVERRIDE,
+} from "./constants";
+
 const HOMEPAGE_RE = /^\/[A-Za-z-]*\/?(?:_homepage)?$/i;
 const DOCS_RE = /^\/[A-Za-z-]+\/docs\/.*$/i;
 const PLUS_RE = /^\/[A-Za-z-]*\/?plus(?:\/?.*)$/i;
@@ -6,7 +12,10 @@ const CATEGORIES = ["html", "javascript", "css", "api", "http"];
 
 export function docCategory({ pathname = "" } = {}): string | null {
   const [, , , webOrLearn, category] = pathname.split("/");
-  if (webOrLearn === "Learn" || webOrLearn === "Web") {
+  if (
+    webOrLearn?.toLowerCase() === "learn" ||
+    webOrLearn?.toLowerCase() === "web"
+  ) {
     if (CATEGORIES.includes(category?.toLocaleLowerCase?.())) {
       return `category-${category.toLowerCase()}`;
     }
@@ -39,7 +48,12 @@ export function postToIEx(theme: string) {
   const iexFrame = document.querySelector(".interactive") as HTMLIFrameElement;
 
   if (iexFrame) {
-    iexFrame.contentWindow?.postMessage({ theme: theme }, IEX_DOMAIN);
+    iexFrame.contentWindow?.postMessage(
+      { theme: theme },
+      window?.mdnWorker?.settings?.preferOnline === false
+        ? window.location.origin
+        : IEX_DOMAIN
+    );
   }
 }
 
@@ -53,4 +67,31 @@ export function switchTheme(theme: string, set: (theme: string) => void) {
     set(theme);
     postToIEx(theme);
   }
+}
+
+export function isPlusSubscriber(user) {
+  if (
+    user?.isSubscriber &&
+    user?.subscriptionType &&
+    user?.subscriptionType.includes("plus")
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+export function isPlusAvailable(userData: UserData | null) {
+  if (typeof PLUS_IS_AVAILABLE_OVERRIDE === "boolean") {
+    return PLUS_IS_AVAILABLE_OVERRIDE;
+  }
+
+  if (!userData) {
+    return false;
+  }
+
+  return (
+    userData.isSubscriber ||
+    PLUS_ENABLED_COUNTRIES.includes(userData.geo?.country)
+  );
 }

@@ -1,18 +1,24 @@
 import { useContext } from "react";
 import type bcd from "@mdn/browser-compat-data/types";
 import { BrowserInfoContext } from "./browser-info";
-import { asList, listFeatures, versionIsPreview } from "./utils";
+import {
+  asList,
+  getFirst,
+  hasNoteworthyNotes,
+  listFeatures,
+  versionIsPreview,
+} from "./utils";
 
 // Also specifies the order in which the legend appears
-const LEGEND_LABELS = {
+export const LEGEND_LABELS = {
   yes: "Full support",
   partial: "Partial support",
   preview: "In development. Supported in a pre-release version.",
   no: "No support",
   unknown: "Compatibility unknown",
   experimental: "Experimental. Expect behavior to change in the future.",
-  "note-warning": "Non-standard. Check cross-browser support before using.",
-  "thumbs-down": "Deprecated. Not for use in new websites.",
+  nonstandard: "Non-standard. Check cross-browser support before using.",
+  deprecated: "Deprecated. Not for use in new websites.",
   footnote: "See implementation notes.",
   disabled: "User must explicitly enable this feature.",
   altname: "Uses a non-standard name.",
@@ -35,10 +41,10 @@ function getActiveLegendItems(
         legendItems.add("experimental");
       }
       if (status.deprecated) {
-        legendItems.add("thumbs-down");
+        legendItems.add("deprecated");
       }
       if (!status.standard_track) {
-        legendItems.add("note-warning");
+        legendItems.add("nonstandard");
       }
     }
 
@@ -48,6 +54,10 @@ function getActiveLegendItems(
       if (!browserSupport) {
         legendItems.add("no");
         continue;
+      }
+      const firstSupportItem = getFirst(browserSupport);
+      if (hasNoteworthyNotes(firstSupportItem)) {
+        legendItems.add("footnote");
       }
 
       for (const versionSupport of asList(browserSupport)) {
@@ -72,9 +82,6 @@ function getActiveLegendItems(
         }
         if (versionSupport.prefix) {
           legendItems.add("prefix");
-        }
-        if (versionSupport.notes) {
-          legendItems.add("footnote");
         }
         if (versionSupport.alternative_name) {
           legendItems.add("altname");

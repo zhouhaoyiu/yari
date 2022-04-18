@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
 
 import { useLocale } from "../../../hooks";
+import InternalLink from "../../atoms/internal-link";
 import { Submenu } from "../submenu";
 
 import "./index.scss";
@@ -13,6 +13,14 @@ export const ReferenceMenu = ({ visibleSubMenuId, toggleMenu }) => {
     label: "References",
     id: "references",
     items: [
+      {
+        description: "Web technology reference for developers",
+        hasIcon: true,
+        extraClasses: "apis-link-container mobile-only",
+        iconClasses: "submenu-icon",
+        label: "Overview / Web Technology",
+        url: `/${locale}/docs/Web`,
+      },
       {
         description: "Structure of content on the web",
         extraClasses: "html-link-container",
@@ -55,11 +63,11 @@ export const ReferenceMenu = ({ visibleSubMenuId, toggleMenu }) => {
       },
       {
         description: "Web technology reference for developers",
-        extraClasses: "apis-link-container",
+        extraClasses: "apis-link-container desktop-only",
         hasIcon: true,
         iconClasses: "submenu-icon",
         label: "Web Technology",
-        url: `/${locale}/docs/Web/`,
+        url: `/${locale}/docs/Web`,
       },
     ],
   };
@@ -80,14 +88,14 @@ export const ReferenceMenu = ({ visibleSubMenuId, toggleMenu }) => {
         {menu.label}
       </button>
 
-      <Link
-        to={`/${locale}/docs/Web/`}
+      <InternalLink
+        to={`/${locale}/docs/Web`}
         className="top-level-entry"
         // @ts-ignore
         onClick={() => document?.activeElement?.blur()}
       >
         {menu.label}
-      </Link>
+      </InternalLink>
 
       <Submenu menuEntry={menu} defaultHidden={!isOpen} />
     </li>
