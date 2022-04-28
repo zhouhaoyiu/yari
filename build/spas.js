@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import frontmatter from "front-matter";
 
-import { m2h } from "../markdown";
+import { m2h } from "../markdown/index.js";
 
 import {
   CONTENT_ROOT,
@@ -14,12 +14,12 @@ import {
 import { BUILD_OUT_ROOT } from "./constants.js";
 
 import got from "got"; // eslint-disable-line node/no-missing-import
-import { splitSections } from "./utils";
+import { splitSections } from "./utils.js";
 
-import { renderHTML } from "../ssr/dist/main";
+import { renderHTML } from "../ssr/index.js";
 import cheerio from "cheerio";
-import { findByURL } from "../content/document";
-import { buildDocument } from "./";
+import { findByURL } from "../content/document.js";
+import { buildDocument } from "./index.js";
 
 const FEATURED_ARTICLES = [
   "Web/CSS/color-scheme",

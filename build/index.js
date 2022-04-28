@@ -50,7 +50,7 @@ const require = createRequire(import.meta.url);
 const LANGUAGES_RAW = require("../content/languages.json");
 
 import { safeDecodeURIComponent } from "../kumascript/src/api/util.js";
-import { wrapTables } from "./wrap-tables";
+import { wrapTables } from "./wrap-tables.js";
 
 const LANGUAGES = new Map(
   Object.entries(LANGUAGES_RAW).map(([locale, data]) => {

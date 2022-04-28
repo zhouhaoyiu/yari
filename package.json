@@ -33,7 +33,7 @@
     "test:headless": "playwright test headless",
     "test:kumascript": "cross-env NODE_OPTIONS=--experimental-vm-modules jest kumascript --env=node",
     "test:testing": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --rootDir testing",
-    "tool": "node tool/cli.js",
+    "tool": "ts-node tool/cli.js",
     "traits:build": "cd traits && node cli.js",
     "watch:ssr": "cd ssr && webpack --mode=production --watch"
   },

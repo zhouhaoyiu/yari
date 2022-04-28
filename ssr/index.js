@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import React from "react";
 import { StaticRouter } from "react-router-dom/server.js";
 
-import { App } from "../client/src/app.tsx";
+import app from "../client/src/app.tsx";
 import render from "./render.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -20,7 +20,7 @@ export function renderHTML(url, context) {
     React.createElement(
       StaticRouter,
       { location: url, context },
-      React.createElement(App, context)
+      React.createElement(app.App, context)
     ),
     context
   );
