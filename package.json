@@ -126,6 +126,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
+    "@babel/plugin-proposal-private-property-in-object": "^7.16.7",
     "@playwright/test": "^1.21.1",
     "@testing-library/react": "^12.1.5",
     "@types/hast": "^2.3.4",
