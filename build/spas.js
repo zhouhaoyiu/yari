@@ -13,7 +13,7 @@ import {
 } from "../content/index.js";
 import { BUILD_OUT_ROOT } from "./constants.js";
 
-import got from "got";
+import got from "got"; // eslint-disable-line node/no-missing-import
 import { splitSections } from "./utils";
 
 import { renderHTML } from "../ssr/dist/main";
