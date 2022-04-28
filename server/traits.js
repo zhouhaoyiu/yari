@@ -6,6 +6,13 @@ import express from "express";
 import { Document } from "../content";
 import { analyzeDocument } from "../build";
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+
 const MACROS_ROOT = path.join(__dirname, "..", "kumascript", "macros");
 console.assert(fs.existsSync(MACROS_ROOT), `${MACROS_ROOT} does not exist`);
 
