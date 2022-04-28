@@ -1,4 +1,4 @@
-const StyleDictionary = require("style-dictionary"); // eslint-disable-line node/no-unpublished-require
+import StyleDictionary from "style-dictionary"; // eslint-disable-line node/no-unpublished-import
 
 StyleDictionary.registerTransform({
   name: "value/rewrite",

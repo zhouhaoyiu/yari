@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import frontmatter from "front-matter";
 
-const { m2h } = require("../markdown");
+import { m2h } from "../markdown";
 
 import {
   CONTENT_ROOT,
@@ -13,17 +13,12 @@ import {
 } from "../content/index.js";
 import { BUILD_OUT_ROOT } from "./constants.js";
 
-import { createRequire } from "module";
 import got from "got";
 import { splitSections } from "./utils";
 
-const require = createRequire(import.meta.url);
-// eslint-disable-next-line node/no-missing-require
-const { renderHTML } = require("../ssr/dist/main");
-const { default: got } = require("got");
-const { splitSections } = require("./utils");
-const cheerio = require("cheerio");
-const { findByURL } = require("../content/document");
+import { renderHTML } from "../ssr/dist/main";
+import cheerio from "cheerio";
+import { findByURL } from "../content/document";
 
 const FEATURED_ARTICLES = [
   "Web/CSS/color-scheme",
@@ -286,7 +281,7 @@ async function buildSPAs(options) {
       }
 
       // circular dependency, so needs to be imported down here:
-      const { buildDocument } = require("./");
+      import { buildDocument } from "./";
       const featuredArticles = (
         await Promise.all(
           FEATURED_ARTICLES.map(async (url) => {
