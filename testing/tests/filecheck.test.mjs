@@ -2,7 +2,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
 
-import { checkFile } from "../../filecheck/checker.mjs";
+import { checkFile } from "../../filecheck/checker";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SAMPLES_DIRECTORY = path.join(

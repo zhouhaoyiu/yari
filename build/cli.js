@@ -20,7 +20,7 @@ import {
 } from "../content/index.js";
 import { VALID_LOCALES } from "../libs/constants/index.js";
 
-import ssr from "../ssr/dist/main.cjs";
+import ssr from "../ssr/dist/main";
 const { renderHTML } = ssr;
 
 import * as options from "./build-options.js";

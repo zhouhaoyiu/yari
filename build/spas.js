@@ -15,7 +15,7 @@ import { BUILD_OUT_ROOT } from "./constants.js";
 
 import { createRequire } from "module";
 import got from "got";
-import { splitSections } from "./utils.js";
+import { splitSections } from "./utils";
 
 const require = createRequire(import.meta.url);
 // eslint-disable-next-line node/no-missing-require
