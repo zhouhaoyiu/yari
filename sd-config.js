@@ -45,7 +45,7 @@ StyleDictionary.registerTransform({
   },
 });
 
-module.exports = {
+export default {
   source: ["./client/src/ui/style-dictionary/**/*.json"],
   platforms: {
     scss: {
