@@ -19,6 +19,7 @@ import { splitSections } from "./utils";
 import { renderHTML } from "../ssr/dist/main";
 import cheerio from "cheerio";
 import { findByURL } from "../content/document";
+import { buildDocument } from "./";
 
 const FEATURED_ARTICLES = [
   "Web/CSS/color-scheme",
@@ -280,8 +281,6 @@ async function buildSPAs(options) {
         continue;
       }
 
-      // circular dependency, so needs to be imported down here:
-      import { buildDocument } from "./";
       const featuredArticles = (
         await Promise.all(
           FEATURED_ARTICLES.map(async (url) => {
