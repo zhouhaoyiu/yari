@@ -178,6 +178,7 @@ jobs:
           REACT_APP_MDN_PLUS_5Y_PLAN: price_1KeG02JNcmPzuWtRslZijhQu
           REACT_APP_MDN_PLUS_10M_PLAN: price_1KeG02JNcmPzuWtRuAnIgNHh
           REACT_APP_MDN_PLUS_10Y_PLAN: price_1KeG02JNcmPzuWtRlrSiLTI6
+          REACT_APP_ENABLE_PLUS_EU: true
 
         run: |
 
@@ -258,6 +259,19 @@ jobs:
           poetry run deployer speedcurve-deploy \
             --note "${GITHUB_SHA}" \
             --detail "run_id=${GITHUB_RUN_ID} action=${GITHUB_ACTION}"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.DEPLOYER_PROD_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEPLOYER_PROD_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Invalidate CDN
+        env:
+          DISTRIBUTION: E2ZY2DGUN70EMI
+          PATHS: /*
+        run: aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION" --paths "$PATHS"
 
       - name: Slack Notification
         if: failure()

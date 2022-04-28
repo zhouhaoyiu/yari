@@ -1,14 +1,8 @@
 import "./index.scss";
-import {
-  FXA_SIGNIN_URL,
-  MDN_PLUS_SUBSCRIBE_10M_URL,
-  MDN_PLUS_SUBSCRIBE_10Y_URL,
-  MDN_PLUS_SUBSCRIBE_5M_URL,
-  MDN_PLUS_SUBSCRIBE_5Y_URL,
-} from "../../../constants";
 import { SubscriptionType, UserData, useUserData } from "../../../user-context";
 import { Switch } from "../../../ui/atoms/switch";
 import { useState } from "react";
+import { useOnlineStatus } from "../../../hooks";
 
 export enum Period {
   Month,
@@ -41,6 +35,16 @@ export type OfferDetailsPlanProps = {
   ctaLink: string;
 };
 
+export type PlanInfo = {
+  id: string;
+  monthlyPriceInCents: number;
+};
+
+export type StripePlans = {
+  currency: string;
+  plans: { [key: string]: PlanInfo };
+};
+
 export type OfferDetailsProps = {
   id: string;
   name: string;
@@ -52,75 +56,6 @@ export type OfferDetailsProps = {
   upgradeCta?: string;
   discounted: OfferDetailsPlanProps;
   regular: OfferDetailsPlanProps;
-};
-
-const PLUS_FEATURES = [
-  ["notifications", "Page notifications"],
-  ["collections", "Collections of articles"],
-  ["offline", "MDN Offline"],
-];
-
-const CORE: OfferDetailsProps = {
-  id: "core",
-  name: "Core",
-  features: [
-    ["notifications", "Notifications for up to 3 pages"],
-    ["collections", "Up to 5 saved articles"],
-  ],
-  includes: "Includes:",
-  cta: "Start with Core",
-  regular: {
-    subscriptionType: SubscriptionType.MDN_CORE,
-    ctaLink: `${FXA_SIGNIN_URL}?next=/en-US/plus`,
-  },
-  discounted: {
-    subscriptionType: SubscriptionType.MDN_CORE,
-    ctaLink: `${FXA_SIGNIN_URL}?next=/en-US/plus`,
-  },
-};
-
-const PLUS_5: OfferDetailsProps = {
-  id: "plus5",
-  name: "MDN Plus 5",
-  currency: "USD",
-  features: PLUS_FEATURES,
-  includes: "Includes unlimited access to:",
-  cta: "Start with Plus 5",
-  upgradeCta: "Upgrade to Plus 5",
-  regular: {
-    subscriptionType: SubscriptionType.MDN_PLUS_5M,
-    ctaLink: MDN_PLUS_SUBSCRIBE_5M_URL,
-    monthlyPrice: 500,
-  },
-  discounted: {
-    subscriptionType: SubscriptionType.MDN_PLUS_5Y,
-    ctaLink: MDN_PLUS_SUBSCRIBE_5Y_URL,
-    monthlyPrice: 417,
-  },
-};
-
-const PLUS_10: OfferDetailsProps = {
-  id: "plus10",
-  name: "MDN Supporter 10",
-  currency: "USD",
-  features: [
-    ...PLUS_FEATURES,
-    [null, "Early access to new features"],
-    [null, "Pride and joy"],
-  ],
-  includes: "Includes unlimited access to:",
-  cta: "Start with Supporter 10",
-  upgradeCta: "Upgrade to Supporter 10",
-  regular: {
-    subscriptionType: SubscriptionType.MDN_PLUS_10M,
-    ctaLink: MDN_PLUS_SUBSCRIBE_10M_URL,
-    monthlyPrice: 1000,
-  },
-  discounted: {
-    subscriptionType: SubscriptionType.MDN_PLUS_10Y,
-    ctaLink: MDN_PLUS_SUBSCRIBE_10Y_URL,
-    monthlyPrice: 833,
-  },
 };
 
 function OfferDetails({
@@ -223,34 +158,79 @@ function canUpgrade(user: UserData | null, subscriptionType: SubscriptionType) {
   );
 }
 
-function OfferOverviewSubscribe() {
+function OfferOverviewSubscribe({
+  offerDetails,
+}: {
+  offerDetails: {
+    CORE: OfferDetailsProps;
+    PLUS_5: OfferDetailsProps | null;
+    PLUS_10: OfferDetailsProps | null;
+  } | null;
+}) {
   const userData = useUserData();
+
+  const { isOnline } = useOnlineStatus();
+
   const activeSubscription = userData?.subscriptionType;
   const activeSubscriptionPeriod =
     (activeSubscription && SUBSCRIPTIONS[activeSubscription]?.period) ||
     Period.Month;
 
   let [period, setPeriod] = useState(activeSubscriptionPeriod);
+  const wrapperClass = !isOnline ? "wrapper-offline" : "wrapper";
 
   return (
     <div className="dark subscribe-wrapper">
       <section className="container subscribe" id="subscribe">
-        <h2>Choose a plan</h2>
-        <Switch
-          name="period"
-          checked={period === Period.Year || false}
-          toggle={(e) => {
-            const period = e.target.checked ? Period.Year : Period.Month;
-            setPeriod(period);
-          }}
-        >
-          Pay yearly and get 2 months for free
-        </Switch>
-        <div className="wrapper">
-          <OfferDetails offerDetails={CORE} period={period}></OfferDetails>
-          <OfferDetails offerDetails={PLUS_5} period={period}></OfferDetails>
-          <OfferDetails offerDetails={PLUS_10} period={period}></OfferDetails>
-        </div>
+        {!isOnline && (
+          <h2>
+            You are currently offline. Please go online to view the plans for
+            MDN Plus
+          </h2>
+        )}
+        {isOnline && (
+          <>
+            {(offerDetails && <h2>Choose a plan</h2>) || (
+              <h2>Loading available plans…</h2>
+            )}
+            {offerDetails &&
+              /** Only display discount switch if paid plans available  */
+              offerDetails.PLUS_5 && (
+                <Switch
+                  name="period"
+                  checked={period === Period.Year || false}
+                  toggle={(e) => {
+                    const period = e.target.checked
+                      ? Period.Year
+                      : Period.Month;
+                    setPeriod(period);
+                  }}
+                >
+                  Pay yearly and get 2 months for free
+                </Switch>
+              )}
+          </>
+        )}
+        {offerDetails && (
+          <div className={wrapperClass}>
+            <OfferDetails
+              offerDetails={offerDetails.CORE}
+              period={period}
+            ></OfferDetails>
+            {offerDetails.PLUS_5 && (
+              <OfferDetails
+                offerDetails={offerDetails.PLUS_5}
+                period={period}
+              ></OfferDetails>
+            )}
+            {offerDetails.PLUS_10 && (
+              <OfferDetails
+                offerDetails={offerDetails.PLUS_10}
+                period={period}
+              ></OfferDetails>
+            )}
+          </div>
+        )}
       </section>
       <p className="plus-for-companies">
         * Do you need MDN Plus for your company?{" "}
