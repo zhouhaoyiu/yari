@@ -12,7 +12,6 @@ import { getBrokenLinksFlaws } from "./broken-links.js";
 import { getHeadingLinksFlaws } from "./heading-links.js";
 import { getPreTagFlaws } from "./pre-tags.js";
 import { injectSectionFlaws } from "./sections.js";
-import { getUnsafeHTMLFlaws } from "./unsafe-html";
 import { getAndMarkupUnsafeHTMLFlaws } from "./unsafe-html.js";
 import { injectTranslationDifferences } from "./translation-differences.js";
 
