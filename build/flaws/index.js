@@ -254,4 +254,4 @@ export async function fixFixableFlaws(doc, options, document) {
   }
 }
 
-export { injectFlaws, injectSectionFlaws, fixFixableFlaws };
+export { injectSectionFlaws };
