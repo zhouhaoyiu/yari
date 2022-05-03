@@ -1,16 +1,13 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-import { DEFAULT_LOCALE } from "../../../libs/constants/index.js";
-import { code } from "./code.js";
-import { asDefinitionList, isDefinitionList } from "./dl.js";
-import { one, all, wrap } from "./mdast-util-to-hast-utils.js";
+const fs = require("fs");
+const path = require("path");
+const { DEFAULT_LOCALE } = require("../../../libs/constants");
+const code = require("./code.cjs");
+const { asDefinitionList, isDefinitionList } = require("./dl.cjs");
+const { one, all, wrap } = require("./mdast-util-to-hast-utils.cjs");
 
 /* A utilitary function which parses a JSON gettext file
   to return a Map with each localized string and its matching ID  */
 function getL10nCardMap(locale = DEFAULT_LOCALE) {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
   // Test if target localization file exists, if
   // not, fallback on English
   let localeFilePath = path.join(
@@ -127,4 +124,4 @@ function buildLocalizedHandlers(locale) {
   };
 }
 
-export { buildLocalizedHandlers };
+module.exports = { buildLocalizedHandlers };
