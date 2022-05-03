@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { cwd } from "process";
 import { renderToString } from "react-dom/server.js";
 import cheerio from "cheerio";
 
@@ -13,9 +14,6 @@ const PREFERRED_LOCALE = {
   pt: "pt-PT",
   zh: "zh-CN",
 };
-
-import { fileURLToPath } from "url";
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function getHrefLang(locale, otherLocales) {
   // In most cases, just return the language code, removing the country
@@ -54,8 +52,7 @@ const lazy = (creator) => {
   };
 };
 
-// eslint-disable-next-line no-undef
-const clientBuildRoot = path.resolve(__dirname, "../../client/build");
+const clientBuildRoot = path.resolve(cwd(), "client/build");
 
 const readBuildHTML = lazy(() => {
   const html = fs.readFileSync(
