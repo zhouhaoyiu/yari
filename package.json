@@ -33,7 +33,7 @@
     "test:headless": "playwright test headless",
     "test:kumascript": "cross-env NODE_OPTIONS=--experimental-vm-modules jest kumascript --env=node",
     "test:testing": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --rootDir testing",
-    "tool": "ts-node tool/cli.js",
+    "tool": "node --loader ts-node/esm tool/cli.js",
     "traits:build": "cd traits && node cli.js",
     "watch:ssr": "cd ssr && webpack --mode=production --watch"
   },
@@ -183,6 +183,7 @@
     "stylelint-scss": "^4.1.0",
     "swr": "^1.2.2",
     "ts-loader": "^9.2.6",
+    "ts-node": "^10.7.0",
     "typescript": "^4.6.3",
     "use-debounce": "^7.0.1",
     "webpack": "^5.68.0",
