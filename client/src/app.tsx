@@ -24,10 +24,15 @@ import { ContributorSpotlight } from "./contributor-spotlight";
 
 import { Banner, hasActiveBanners } from "./banners";
 
+// @ts-ignore
 const AllFlaws = React.lazy(() => import("./flaws"));
+// @ts-ignore
 const AllTraits = React.lazy(() => import("./traits"));
+// @ts-ignore
 const Translations = React.lazy(() => import("./translations"));
+// @ts-ignore
 const WritersHomepage = React.lazy(() => import("./writers-homepage"));
+// @ts-ignore
 const Sitemap = React.lazy(() => import("./sitemap"));
 
 const isServer = typeof window === "undefined";
