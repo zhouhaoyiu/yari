@@ -3,12 +3,16 @@ const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const webpack = require("webpack");
 
+const webpackImportMetaLoader = require.resolve(
+  "./webpack-import-meta-loader.cjs"
+);
+
 module.exports = {
   context: path.resolve(__dirname, "."),
   entry: "./index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "[name].js",
+    filename: "[name].cjs",
     sourceMapFilename: "[name].js.map",
     libraryTarget: "commonjs2",
   },
@@ -26,6 +30,10 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.js$/,
+        loader: webpackImportMetaLoader,
+      },
       {
         test: /\.tsx?$/,
         exclude: /node_modules/,
