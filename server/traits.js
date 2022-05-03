@@ -3,8 +3,8 @@ import path from "path";
 
 import express from "express";
 
-import { Document } from "../content";
-import { analyzeDocument } from "../build";
+import { Document } from "../content/index.js";
+import { analyzeDocument } from "../build/index.js";
 
 import { fileURLToPath } from "url";
 import { dirname } from "path";
