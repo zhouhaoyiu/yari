@@ -87,7 +87,8 @@ export function Document(props /* TODO: define a TS interface for this */) {
       return doc;
     },
     {
-      initialData:
+      // see https://github.com/vercel/swr/pull/1370
+      fallbackData:
         props.doc &&
         props.doc.mdn_url.toLowerCase() === documentURL.toLowerCase()
           ? props.doc
