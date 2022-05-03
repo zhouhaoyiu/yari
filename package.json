@@ -132,6 +132,7 @@
     "@mdn/minimalist": "^2.0.4",
     "@playwright/test": "1.21.1",
     "@testing-library/react": "^12.1.5",
+    "@types/cli-progress": "^3.9.2",
     "@types/hast": "^2.3.4",
     "@types/jest": "^27.5.0",
     "@types/mdast": "^3.0.10",
