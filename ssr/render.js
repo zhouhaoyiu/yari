@@ -54,6 +54,7 @@ const lazy = (creator) => {
   };
 };
 
+// eslint-disable-next-line no-undef
 const clientBuildRoot = path.resolve(__dirname, "../../client/build");
 
 const readBuildHTML = lazy(() => {
