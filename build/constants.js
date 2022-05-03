@@ -1,6 +1,11 @@
-const path = require("path");
+import path from "path";
+import { fileURLToPath } from "url";
 
-require("dotenv").config({
+// @see https://github.com/motdotla/dotenv/issues/89#issuecomment-139372079
+import dotenv from "dotenv";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({
   path: path.join(__dirname, "..", process.env.ENV_FILE || ".env"),
 });
 
@@ -63,7 +68,7 @@ const ALWAYS_ALLOW_ROBOTS = JSON.parse(
   process.env.BUILD_ALWAYS_ALLOW_ROBOTS || "false"
 );
 
-module.exports = {
+export {
   BUILD_OUT_ROOT,
   DEFAULT_FLAW_LEVELS,
   FILES,

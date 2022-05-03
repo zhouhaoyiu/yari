@@ -1,20 +1,14 @@
-/**
- * @prettier
- */
-const { JSDOM } = require("jsdom");
+import { jsdom } from "jsdom";
 
-const {
-  beforeEachMacro,
-  describeMacro,
-  itMacro,
-  lintHTML,
-} = require("./utils");
+import { beforeEachMacro, describeMacro, itMacro, lintHTML } from "./utils.js";
 
 /**
  * Load all the fixtures.
  */
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const groupDataFixturePath = path.resolve(
   __dirname,
   "fixtures/listgroups/groupdata.json"
@@ -85,9 +79,9 @@ function compareNode(actual, expected) {
  */
 function checkResult(html) {
   expect(lintHTML(html)).toBeFalsy();
-  const actualDOM = JSDOM.fragment(html);
+  const actualDOM = jsdom.fragment(html);
   const actualNodes = actualDOM.querySelectorAll("*");
-  const expectedDOM = JSDOM.fragment(expectedHTML);
+  const expectedDOM = jsdom.fragment(expectedHTML);
   const expectedNodes = expectedDOM.querySelectorAll("*");
   expect(expectedNodes.length).toEqual(actualNodes.length);
   for (let i = 0; i < expectedNodes.length; i++) {

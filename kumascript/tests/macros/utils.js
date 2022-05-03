@@ -1,11 +1,11 @@
-/**
- * @prettier
- */
+import { HtmlValidate } from "html-validate";
 
-const { HtmlValidate } = require("html-validate");
+import Environment from "../../src/environment.js";
+import Templates from "../../src/templates.js";
 
-const Environment = require("../../src/environment.js");
-const Templates = require("../../src/templates.js");
+import path from "path";
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // When we were doing mocha testing, we used this.macro to hold this.
 // But Jest doesn't use the this object, so we just store the object here.
@@ -190,7 +190,7 @@ function lintHTML(html) {
 }
 
 // ### Exported public API
-module.exports = {
+export {
   assert,
   itMacro,
   describeMacro,

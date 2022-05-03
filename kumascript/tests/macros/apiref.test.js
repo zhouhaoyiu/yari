@@ -1,20 +1,16 @@
-/**
- * @prettier
- */
-const { JSDOM } = require("jsdom");
 
-const {
-  beforeEachMacro,
-  describeMacro,
-  itMacro,
-  lintHTML,
-} = require("./utils");
+import { jsdom } from "jsdom";
+
+import { beforeEachMacro, describeMacro, itMacro, lintHTML } from "./utils.js";
 
 /**
  * Load all the fixtures.
  */
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const subpagesFixturePath = path.resolve(
   __dirname,
   "fixtures/apiref/subpages.json"
@@ -410,7 +406,7 @@ function checkResult(html, config) {
   // Lint the HTML
   expect(lintHTML(html)).toBeFalsy();
 
-  const dom = JSDOM.fragment(html);
+  const dom = jsdom.fragment(html);
   // Check that all links reference the proper locale or use https
   const num_total_links = dom.querySelectorAll("a[href]").length;
   const num_valid_links = dom.querySelectorAll(

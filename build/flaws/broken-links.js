@@ -1,13 +1,14 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const fromMarkdown = require("mdast-util-from-markdown");
-const visit = require("unist-util-visit");
+import { fromMarkdown } from "mdast-util-from-markdown";
+import { visit } from "unist-util-visit";
 
-const { Document, Redirect, Image } = require("../../content");
-const { FLAW_LEVELS } = require("../constants");
-const { findMatchesInText } = require("../matches-in-text");
-const { DEFAULT_LOCALE, VALID_LOCALES } = require("../../libs/constants");
+import { Document, Redirect, Image } from "../../content/index.js";
+import { FLAW_LEVELS } from "../constants.js";
+import { findMatchesInText } from "../matches-in-text.js";
+import { DEFAULT_LOCALE, VALID_LOCALES } from "../../libs/constants/index.js";
 
 function findMatchesInMarkdown(rawContent, href) {
   const matches = [];
@@ -21,12 +22,13 @@ function findMatchesInMarkdown(rawContent, href) {
 }
 
 const _safeToHttpsDomains = new Map();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 function getSafeToHttpDomains() {
   if (!_safeToHttpsDomains.size) {
     const fileParsed = JSON.parse(
       fs.readFileSync(
         path.join(__dirname, "safe-to-https-domains.json"),
-        "utf-8"
+        "utf8"
       )
     );
     Object.entries(fileParsed).forEach(([key, value]) =>
@@ -362,4 +364,4 @@ function getBrokenLinksFlaws(doc, $, { rawContent }, level) {
   return flaws;
 }
 
-module.exports = { getBrokenLinksFlaws };
+export { getBrokenLinksFlaws };

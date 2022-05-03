@@ -1,7 +1,4 @@
-/**
- * @prettier
- */
-const { assert, describeMacro, itMacro } = require("./utils");
+import { assert, describeMacro, itMacro } from "./utils.js";
 
 describeMacro("TemplateLink", () => {
   itMacro("TemplateLink generates correct DOM", (macro) => {

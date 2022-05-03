@@ -1,40 +1,44 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-const chalk = require("chalk");
-const cheerio = require("cheerio");
+import chalk from "chalk";
+import cheerio from "cheerio";
 
-const {
+import {
   Document,
   CONTENT_ROOT,
   Image,
   REPOSITORY_URLS,
   execGit,
-} = require("../content");
-const kumascript = require("../kumascript");
-const { normalizeMacroName } = require("../kumascript/src/render.js");
+} from "../content/index.js";
+import kumascript from "../kumascript/index.js";
+import { normalizeMacroName } from "../kumascript/src/render.js";
 
-const { FLAW_LEVELS } = require("./constants");
-const {
+import { FLAW_LEVELS } from "./constants.js";
+import {
   extractSections,
   extractSidebar,
   extractSummary,
-} = require("./document-extractor");
-const SearchIndex = require("./search-index");
-const { addBreadcrumbData } = require("./document-utils");
-const { fixFixableFlaws, injectFlaws, injectSectionFlaws } = require("./flaws");
-const { normalizeBCDURLs, extractBCDData } = require("./bcd-urls");
-const { checkImageReferences, checkImageWidths } = require("./check-images");
-const { getPageTitle } = require("./page-title");
-const { syntaxHighlight } = require("./syntax-highlight");
-const { formatNotecards } = require("./format-notecards");
-const buildOptions = require("./build-options");
-const { gather: gatherGitHistory } = require("./git-history");
-const { buildSPAs } = require("./spas");
-const { renderCache: renderKumascriptCache } = require("../kumascript");
-const LANGUAGES_RAW = require("../content/languages.json");
-const { safeDecodeURIComponent } = require("../kumascript/src/api/util");
-const { wrapTables } = require("./wrap-tables");
+} from "./document-extractor.js";
+import * as SearchIndex from "./search-index.js";
+import { addBreadcrumbData } from "./document-utils.js";
+import {
+  fixFixableFlaws,
+  injectFlaws,
+  injectSectionFlaws,
+} from "./flaws/index.js";
+import { normalizeBCDURLs, extractBCDData } from "./bcd-urls.js";
+import { checkImageReferences, checkImageWidths } from "./check-images.js";
+import { getPageTitle } from "./page-title.js";
+import { syntaxHighlight } from "./syntax-highlight.js";
+import { formatNotecards } from "./format-notecards.js";
+import buildOptions from "./build-options.js";
+import { gather as gatherGitHistory } from "./git-history.js";
+import { buildSPAs } from "./spas.js";
+
+import LANGUAGES_RAW from "../content/languages.json";
+import { safeDecodeURIComponent } from "../kumascript/src/api/util.js";
+import { wrapTables } from "./wrap-tables.js";
 
 const LANGUAGES = new Map(
   Object.entries(LANGUAGES_RAW).map(([locale, data]) => {
@@ -310,7 +314,7 @@ async function buildDocument(document, documentOptions = {}) {
     renderKumascriptCache.reset();
   }
   try {
-    [renderedHtml, flaws] = await kumascript.render(document.url);
+    [renderedHtml, flaws] = await renderFromURL(document.url);
   } catch (error) {
     if (error.name === "MacroInvocationError") {
       // The source HTML couldn't even be parsed! There's no point allowing
@@ -329,7 +333,7 @@ async function buildDocument(document, documentOptions = {}) {
 
   const $ = cheerio.load(`<div id="_body">${renderedHtml}</div>`);
 
-  const liveSamplePages = kumascript.buildLiveSamplePages(
+  const liveSamplePages = buildLiveSamplePages(
     document.url,
     document.metadata.title,
     $,
@@ -633,14 +637,12 @@ async function buildLiveSamplePageFromURL(url) {
   if (!document) {
     throw new Error(`No document found for ${documentURL}`);
   }
-  const liveSamplePage = kumascript
-    .buildLiveSamplePages(
-      document.url,
-      document.metadata.title,
-      (await kumascript.render(document.url))[0],
-      document.rawBody
-    )
-    .find((page) => page.id.toLowerCase() == decodedSampleID);
+  const liveSamplePage = buildLiveSamplePages(
+    document.url,
+    document.metadata.title,
+    (await renderFromURL(document.url))[0],
+    document.rawBody
+  ).find((page) => page.id.toLowerCase() == decodedSampleID);
 
   if (liveSamplePage) {
     if (liveSamplePage.flaw) {
@@ -787,18 +789,15 @@ function countImages($) {
   return counts;
 }
 
-module.exports = {
-  FLAW_LEVELS,
+export const options = buildOptions;
 
+export {
+  FLAW_LEVELS,
   buildDocument,
   analyzeDocument,
-
   buildLiveSamplePageFromURL,
   renderContributorsTxt,
-
   SearchIndex,
-
-  options: buildOptions,
   gatherGitHistory,
   buildSPAs,
   getLastCommitURL,

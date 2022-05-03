@@ -1,12 +1,15 @@
-const fs = require("fs");
-const path = require("path");
-const {
-  ACTIVE_LOCALES,
-  VALID_LOCALES,
-  DEFAULT_LOCALE,
-} = require("../libs/constants");
+import fs from "fs";
+import path from "path";
+import { ACTIVE_LOCALES, VALID_LOCALES, 
+  DEFAULT_LOCALE, } from "../libs/constants/index.js";
 
-require("dotenv").config({
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// @see https://github.com/motdotla/dotenv/issues/89#issuecomment-139372079
+import dotenv from "dotenv";
+
+dotenv.config({
   path: path.join(__dirname, "..", process.env.ENV_FILE || ".env"),
 });
 
@@ -63,7 +66,7 @@ function correctContentPathFromEnv(envVarName) {
   return pathName;
 }
 
-module.exports = {
+export {
   CONTENT_ROOT,
   CONTENT_TRANSLATED_ROOT,
   CONTRIBUTOR_SPOTLIGHT_ROOT,

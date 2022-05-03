@@ -1,15 +1,14 @@
-/**
- * @prettier
- */
-
 // There used to be a DekiScript-Page.ejs macro, and this test
 // tested its main functions. The features of that macro are now
 // part of ../../src/environment.js, but we're still testing them here.
 
-const fs = require("fs");
-const path = require("path");
-const { Document } = require("../../../content");
-const { assert, itMacro, describeMacro, beforeEachMacro } = require("./utils");
+import fs from "fs";
+import path from "path";
+import { Document } from "../../../content/index.js";
+import { assert, itMacro, describeMacro, beforeEachMacro } from "./utils.js";
+
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Load fixture data.
 const fixtureData = JSON.parse(

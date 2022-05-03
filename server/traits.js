@@ -1,10 +1,13 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
-const express = require("express");
+import express from "express";
 
-const { Document } = require("../content");
-const { analyzeDocument } = require("../build");
+import { Document } from "../content";
+import { analyzeDocument } from "../build";
+
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const MACROS_ROOT = path.join(__dirname, "..", "kumascript", "macros");
 console.assert(fs.existsSync(MACROS_ROOT), `${MACROS_ROOT} does not exist`);
@@ -58,4 +61,4 @@ async function analyzeDocuments() {
   return docs;
 }
 
-module.exports = router;
+export default router;

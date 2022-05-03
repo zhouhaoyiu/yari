@@ -1,9 +1,5 @@
-/**
- * @prettier
- */
-
-const { assert, itMacro, describeMacro, lintHTML } = require("./utils");
-const jsdom = require("jsdom");
+import { assert, itMacro, describeMacro, lintHTML } from "./utils.js";
+import { jsdom } from "jsdom";
 
 const locales = {
   "en-US": {
@@ -24,7 +20,7 @@ describeMacro("ToolsSidebar", function () {
     macro.ctx.env.locale = "en-US";
     return macro.call().then(function (result) {
       expect(lintHTML(result)).toBeFalsy();
-      const dom = jsdom.JSDOM.fragment(result);
+      const dom = jsdom.fragment(result);
       checkSidebarDom(dom, "en-US");
     });
   });
@@ -33,7 +29,7 @@ describeMacro("ToolsSidebar", function () {
     macro.ctx.env.locale = "fr";
     return macro.call().then(function (result) {
       expect(lintHTML(result)).toBeFalsy();
-      const dom = jsdom.JSDOM.fragment(result);
+      const dom = jsdom.fragment(result);
       checkSidebarDom(dom, "fr");
     });
   });

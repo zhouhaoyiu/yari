@@ -1,11 +1,11 @@
 import fs from "fs";
 import path from "path";
-import { renderToString } from "react-dom/server";
+import { renderToString } from "react-dom/server.js";
 import cheerio from "cheerio";
 
-import { ALWAYS_ALLOW_ROBOTS, BUILD_OUT_ROOT } from "../build/constants";
+import { ALWAYS_ALLOW_ROBOTS, BUILD_OUT_ROOT } from "../build/constants.js";
 
-const { DEFAULT_LOCALE } = require("../libs/constants");
+import { DEFAULT_LOCALE } from "../libs/constants/index.js";
 
 // When there are multiple options for a given language, this gives the
 // preferred locale for that language (language => preferred locale).
@@ -13,6 +13,9 @@ const PREFERRED_LOCALE = {
   pt: "pt-PT",
   zh: "zh-CN",
 };
+
+import { fileURLToPath } from "url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function getHrefLang(locale, otherLocales) {
   // In most cases, just return the language code, removing the country

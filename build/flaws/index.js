@@ -1,23 +1,23 @@
-const path = require("path");
+import path from "path";
 
-const chalk = require("chalk");
+import chalk from "chalk";
 
-const { Document } = require("../../content");
-const { FLAW_LEVELS, VALID_FLAW_CHECKS } = require("../constants");
-const { DEFAULT_LOCALE } = require("../../libs/constants");
-const { replaceMatchesInText } = require("../matches-in-text");
-const { forceExternalURL, downloadAndResizeImage } = require("../utils");
-const { getBadBCDQueriesFlaws } = require("./bad-bcd-queries");
-const { getBrokenLinksFlaws } = require("./broken-links");
-const { getHeadingLinksFlaws } = require("./heading-links");
-const { getPreTagFlaws } = require("./pre-tags");
-const { injectSectionFlaws } = require("./sections");
-const { getUnsafeHTMLFlaws } = require("./unsafe-html");
-const { injectTranslationDifferences } = require("./translation-differences");
+import { Document } from "../../content/index.js";
+import { FLAW_LEVELS, VALID_FLAW_CHECKS } from "../constants.js";
+import { DEFAULT_LOCALE } from "../../libs/constants/index.js";
+import { replaceMatchesInText } from "../matches-in-text.js";
+import { forceExternalURL, downloadAndResizeImage } from "../utils.js";
+import { getBadBCDQueriesFlaws } from "./bad-bcd-queries.js";
+import { getBrokenLinksFlaws } from "./broken-links.js";
+import { getHeadingLinksFlaws } from "./heading-links.js";
+import { getPreTagFlaws } from "./pre-tags.js";
+import { injectSectionFlaws } from "./sections.js";
+import { getAndMarkupUnsafeHTMLFlaws } from "./unsafe-html.js";
+import { injectTranslationDifferences } from "./translation-differences.js";
 
-function injectFlaws(doc, $, options, document) {
+export function injectFlaws(doc, $, options, document) {
   const flawChecks = [
-    ["unsafe_html", getUnsafeHTMLFlaws, false],
+    ["unsafe_html", getAndMarkupUnsafeHTMLFlaws, false],
     ["broken_links", getBrokenLinksFlaws, true],
     ["bad_bcd_queries", getBadBCDQueriesFlaws, false],
     ["bad_pre_tags", getPreTagFlaws, false],
@@ -67,7 +67,7 @@ function injectFlaws(doc, $, options, document) {
   }
 }
 
-async function fixFixableFlaws(doc, options, document) {
+export async function fixFixableFlaws(doc, options, document) {
   if (!options.fixFlaws) return;
 
   const { rawBody, isMarkdown } = document;
@@ -254,4 +254,4 @@ async function fixFixableFlaws(doc, options, document) {
   }
 }
 
-module.exports = { injectFlaws, injectSectionFlaws, fixFixableFlaws };
+export { injectSectionFlaws };

@@ -1,8 +1,5 @@
-/**
- * @prettier
- */
-const { assert, itMacro, describeMacro } = require("./utils");
-const { JSDOM } = require("jsdom");
+import { assert, itMacro, describeMacro } from "./utils.js";
+import { jsdom } from "jsdom";
 
 describeMacro("Draft", () => {
   itMacro("No arguments (en-US)", function (macro) {
@@ -105,7 +102,7 @@ describeMacro("Draft", () => {
       return macro
         .call("The reason is shrouded in mystery (~~escattone).")
         .then((result) => {
-          const dom = JSDOM.fragment(result);
+          const dom = jsdom.fragment(result);
           expect(dom.childElementCount).toBeGreaterThanOrEqual(1);
           assert(
             dom.firstElementChild.classList.contains("notecard"),
@@ -140,7 +137,7 @@ describeMacro("Draft", () => {
       return macro
         .call("{{Draft}} macro test. ~~stephaniehobson")
         .then((result) => {
-          const dom = JSDOM.fragment(result);
+          const dom = jsdom.fragment(result);
           expect(dom.childElementCount).toBeGreaterThanOrEqual(1);
           assert(
             dom.firstElementChild.classList.contains("notecard"),
@@ -173,7 +170,7 @@ describeMacro("Draft", () => {
     "One argument with embedded user profile at the end (ExE-Boss) (en-US)",
     (macro) => {
       return macro.call("{{Draft}} macro test. ~~ExE-Boss").then((result) => {
-        const dom = JSDOM.fragment(result);
+        const dom = jsdom.fragment(result);
         expect(dom.childElementCount).toBeGreaterThanOrEqual(1);
         assert(
           dom.firstElementChild.classList.contains("notecard"),
