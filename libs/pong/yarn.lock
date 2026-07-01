@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"@adzerk/api-decision-js@^1.0.10":
-  version "1.0.23"
-  resolved "https://registry.yarnpkg.com/@adzerk/api-decision-js/-/api-decision-js-1.0.23.tgz#2908449f3e149ffec63833793188d49ac25a9ba6"
-  integrity sha512-oThjqykHOloX05F4g1epA8+AIJbT4B3USlMWbzoUW7ZA7573Gtmq6JgCm05p5/4QSWcbkJrQ14FgqqzychL8+Q==
+"@adzerk/api-decision-js@^1.0.27":
+  version "1.0.27"
+  resolved "https://registry.yarnpkg.com/@adzerk/api-decision-js/-/api-decision-js-1.0.27.tgz#e1bc7c1b793f3fdbf9c5df7e229ae2836aefc8e4"
+  integrity sha512-EMQuFVc7d1sZj3j9nSoKKKAShcfb2MrOG63RWTPj5IJgZWerZDjjgmIN+EqA6L4qWZ4YM/zcil8L7jRtnz0ysA==
 
-"@adzerk/decision-sdk@^1.0.0-beta.28":
-  version "1.0.0-beta.28"
-  resolved "https://registry.yarnpkg.com/@adzerk/decision-sdk/-/decision-sdk-1.0.0-beta.28.tgz#c6f9667c27376fe8913843b154b74c14b220553b"
-  integrity sha512-zRoJK+JeykialMPa3PxwZogKhP4NSgQoQV/nisj2eWnBf5XhKNo+tn1bMTBFAwCw23Ayyi+7eo5WfFyXWipisg==
+"@adzerk/decision-sdk@^1.0.0-beta.30":
+  version "1.0.0-beta.30"
+  resolved "https://registry.yarnpkg.com/@adzerk/decision-sdk/-/decision-sdk-1.0.0-beta.30.tgz#d4162615f0221a093fbe0fd13df641e8a96f83c7"
+  integrity sha512-Xf3GIg79Veh9Swwz/82AyCBHc74Q6bHhFYWgoUJJIWZEUrC4MOqb7/nNxCrdiYWfq0AP8zGSsnxpVaBg1Uafcg==
   dependencies:
-    "@adzerk/api-decision-js" "^1.0.10"
+    "@adzerk/api-decision-js" "^1.0.27"
     debug "^4.1.1"
     form-data "^2.5.1"
     isomorphic-unfetch "^3.1.0"
