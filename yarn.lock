@@ -16256,10 +16256,10 @@ web-component-analyzer@^2.0.0:
     typescript "~5.2.0"
     yargs "^17.7.2"
 
-web-features@^2.40.2:
-  version "2.40.2"
-  resolved "https://registry.yarnpkg.com/web-features/-/web-features-2.40.2.tgz#02c3af575a7f0993d9f828f328d5a9bde0a4af39"
-  integrity sha512-JuWRndnFSo0MoWkmXe9IRgkw46MdBLoynHJ85GHZZ96gJmjQV0ML5jbG8qi0qlWhfO+22hAnodKd/iBHLB5pUw==
+web-features@^3.32.0:
+  version "3.32.0"
+  resolved "https://registry.yarnpkg.com/web-features/-/web-features-3.32.0.tgz#8c5a2a5c5721a3180d74c10c04e6b3c072568498"
+  integrity sha512-PQBbTofqV8FtMP65oT9tLPjbN4FSB2dRdNxLM0A9j4bNifVpFhEP/ATXSMMJAqPPWb/pgUOh6B+98yzfNEVbNw==
 
 web-namespaces@^2.0.0:
   version "2.0.1"
