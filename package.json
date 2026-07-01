@@ -226,7 +226,7 @@
     "foreman": "^3.0.1",
     "fork-ts-checker-webpack-plugin": "^9.1.0",
     "history": "^5.2.0",
-    "html-validate": "^8.28.0",
+    "html-validate": "^11.5.5",
     "html-webpack-plugin": "^5.6.4",
     "ignore-loader": "^0.1.2",
     "jest": "^29.7.0",
